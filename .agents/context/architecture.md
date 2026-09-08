@@ -27,10 +27,12 @@ point. No framework runtime is part of the package.
 
 ## Configuration and voice selection
 
-`src/orbz.config.json` is the authored public configuration. A pure transformer
-validates, clones, derives runtime values and freezes them before use. Runtime
-credentials, callbacks and mutable browser objects remain outside this data.
-Existing uppercase exports are derived compatibility views (ADR-0013).
+`src/orbz.config.json` contains editable component, palette and realtime settings.
+Internal appearance, motion and speech defaults are uppercase constants in
+concern-owned `.data.ts` files (ADR-0016). The pure transformer fills omitted
+internal groups, validates, clones, derives runtime values and freezes them.
+Legacy complete input remains accepted. Existing exports derive from the composed
+runtime. Credentials, callbacks and mutable browser objects stay outside data.
 
 A native `voiceModel` property selects inert adapters through a service.
 `OrbzVoiceEnginePort` handles output-only speech; `OrbzConversationPort` handles

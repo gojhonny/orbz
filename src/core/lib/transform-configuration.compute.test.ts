@@ -1,11 +1,63 @@
 import configuration from '@configuration'
+import { ORBZ_DEFAULT_APPEARANCE_BY_STATE } from '@core/appearance/appearance.data'
+import { ORBZ_DEFAULT_MOTION } from '@core/motion/default-motion.data'
+import { ORBZ_DEFAULT_SPEECH } from '@talk/default-speech.data'
 import { describe, expect, it, vi } from 'vitest'
 
 import { transformOrbzConfiguration } from './transform-configuration.compute'
+import { readOrbzConfigurationSource } from './validate-configuration.compute'
 
 describe('core/transform-configuration', () => {
-  it('derives editable defaults into an isolated immutable runtime configuration', () => {
+  function legacySource() {
+    return readOrbzConfigurationSource({
+      ...configuration,
+      appearance: { ...configuration.appearance, byState: ORBZ_DEFAULT_APPEARANCE_BY_STATE },
+      motion: ORBZ_DEFAULT_MOTION,
+      speech: ORBZ_DEFAULT_SPEECH
+    })
+  }
+
+  it('composes compact JSON into the same isolated runtime as the legacy complete source', () => {
     const input = structuredClone(configuration)
+    const before = structuredClone(input)
+    const result = transformOrbzConfiguration(input)
+    const next = transformOrbzConfiguration(input)
+
+    expect(Object.keys(input)).toEqual(['component', 'appearance', 'realtime'])
+    expect(input.appearance).not.toHaveProperty('byState')
+    expect(result).toEqual(transformOrbzConfiguration(legacySource()))
+    expect(result.speech).toEqual(ORBZ_DEFAULT_SPEECH)
+    expect(result.appearance.byState).toEqual(ORBZ_DEFAULT_APPEARANCE_BY_STATE)
+    expect(result.speech.defaultVoiceModel).toBeNull()
+    expect(result.speech.defaultTalkFlow).toEqual([])
+    expect(result.motion.full.idle.root.transition.repeat).toBe(Number.POSITIVE_INFINITY)
+    expect(result.speech).not.toBe(ORBZ_DEFAULT_SPEECH)
+    expect(result.speech).not.toBe(next.speech)
+    expect(Object.isFrozen(result.speech.webSpeech.preferredVoices)).toBe(true)
+    expect(Object.isFrozen(result.motion.reduced.idle.root.animate)).toBe(true)
+    expect(input).toEqual(before)
+  })
+
+  it.each([
+    'motion',
+    'speech'
+  ])('rejects an explicitly invalid %s instead of using defaults', (key) => {
+    expect(() => transformOrbzConfiguration({ ...configuration, [key]: null })).toThrow(
+      `Invalid Orbz configuration at $.${key}: expected an object.`
+    )
+  })
+
+  it('rejects invalid explicit state appearance instead of using defaults', () => {
+    expect(() =>
+      transformOrbzConfiguration({
+        ...configuration,
+        appearance: { ...configuration.appearance, byState: null }
+      })
+    ).toThrow('Invalid Orbz configuration at $.appearance.byState: expected an object.')
+  })
+
+  it('derives editable defaults into an isolated immutable runtime configuration', () => {
+    const input = legacySource()
     input.component.defaultSize = '32rem'
     input.appearance.defaultPreset = 'peach'
     input.appearance.byState.listening.contrast = 1.7
@@ -28,7 +80,9 @@ describe('core/transform-configuration', () => {
     expect(Reflect.set(result.appearance.presets.peach, 'primary', '#000')).toBe(false)
 
     input.appearance.presets.peach.primary = '#000'
-    input.motion.full.listening.root.transition.repeat = 'changed-after-transform'
+    Object.assign(input.motion.full.listening.root.transition, {
+      repeat: 'changed-after-transform'
+    })
     expect(result.appearance.presets.peach.primary).toBe(before.appearance.presets.peach.primary)
     expect(result.motion.full.listening.root.transition.repeat).toBe(Number.POSITIVE_INFINITY)
   })
@@ -63,7 +117,7 @@ describe('core/transform-configuration', () => {
   })
 
   it('rejects infinite repetition in reduced motion profiles', () => {
-    const input = structuredClone(configuration)
+    const input = legacySource()
     Object.assign(input.motion.reduced.listening.root.transition, { repeat: 'infinite' })
 
     expect(() => transformOrbzConfiguration(input)).toThrow(

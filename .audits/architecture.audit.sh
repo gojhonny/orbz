@@ -75,14 +75,14 @@ else
 fi
 
 if grep -F 'DEFAULT_SPEECH_LANGUAGE = orbzConfiguration.speech.webSpeech.language' src/talk/talk.data.ts >/dev/null 2>&1 &&
-  grep -E '"language"[[:space:]]*:[[:space:]]*"pt-BR"' src/orbz.config.json >/dev/null 2>&1; then
+  grep -F "language: 'pt-BR'" src/talk/default-speech.data.ts >/dev/null 2>&1; then
   pass 'Web Speech default language derives from canonical pt-BR configuration'
 else
   fail 'default speech language must derive from canonical pt-BR configuration'
 fi
 
-if grep -E '"talk"[[:space:]]*:[[:space:]]*\{[[:space:]]*\}' src/orbz.config.json >/dev/null 2>&1 &&
-  grep -E '"defaultTalkFlow"[[:space:]]*:[[:space:]]*\[[[:space:]]*\]' src/orbz.config.json >/dev/null 2>&1; then
+if grep -E 'talk:[[:space:]]*\{[[:space:]]*\}' src/talk/default-speech.data.ts >/dev/null 2>&1 &&
+  grep -E 'defaultTalkFlow:[[:space:]]*\[[[:space:]]*\]' src/talk/default-speech.data.ts >/dev/null 2>&1; then
   pass 'canonical default talk data contains no packaged conversation copy'
 else
   fail 'canonical default talk data must be an empty record and empty flow'

@@ -12,9 +12,28 @@ for path in src/orbz.config.json .audits/configuration.inventory.md; do
   if [ -f "$path" ]; then pass "$path"; else fail "missing $path"; fi
 done
 
-# Deliberately conservative source guard: production uppercase declarations
-# must use a canonical binding. Algorithms and runtime objects stay in
-# code; the one legacy uppercase constructor registry has an exact exemption.
+# ADR-0016 permits exactly three typed internal default owners. Other uppercase
+# declarations still derive from the composed runtime. Algorithms and mutable
+# objects remain code; the constructor registry retains its exact exemption.
+for owner in \
+  src/core/appearance/appearance.data.ts:ORBZ_DEFAULT_APPEARANCE_BY_STATE \
+  src/core/motion/default-motion.data.ts:ORBZ_DEFAULT_MOTION \
+  src/talk/default-speech.data.ts:ORBZ_DEFAULT_SPEECH; do
+  path=${owner%:*}
+  binding=${owner#*:}
+  if [ -f "$path" ] &&
+    grep -F "export const $binding = deepFreezeOrbzConfiguration(" "$path" >/dev/null &&
+    grep -F 'satisfies ' "$path" >/dev/null &&
+    ! grep -E 'configuration.data|@core/config.data|^[[:space:]]*(export[[:space:]]+)?(const|let|var)[[:space:]]+' "$path" | grep -v "export const $binding =" >/dev/null; then
+    pass "$path owns its typed frozen internal defaults"
+  else
+    fail "$path must author only $binding without a runtime-facade dependency"
+  fi
+done
+
+if grep -E '"(byState|motion|speech)"[[:space:]]*:' src/orbz.config.json >/dev/null; then
+  fail 'compact JSON must not reintroduce internal appearance, motion or speech blocks'
+fi
 # Compatibility data modules also reject lowercase authored defaults. Their
 # two legacy aggregate views may only combine already canonical bindings.
 # New declaration forms require an explicit audit/inventory update.
@@ -56,6 +75,9 @@ if find src -type f -name '*.ts' ! -name '*.test.ts' -exec awk '
     pending = ""
     aggregate = 0
   }
+  FILENAME == "src/core/appearance/appearance.data.ts" ||
+  FILENAME == "src/core/motion/default-motion.data.ts" ||
+  FILENAME == "src/talk/default-speech.data.ts" { next }
   {
     if (pending != "") {
       pending = pending " " $0
@@ -86,9 +108,9 @@ if find src -type f -name '*.ts' ! -name '*.test.ts' -exec awk '
     exit failures != 0
   }
 ' {} +; then
-  pass 'production uppercase declarations contain no independent configuration literals'
+  pass 'production defaults use only approved authoring locations'
 else
-  fail 'production uppercase configuration must derive from the canonical JSON'
+  fail 'production uppercase configuration must derive from runtime outside approved data owners'
 fi
 
 for path in src/core/config.data.ts src/core/motion/motion.data.ts src/element/element.data.ts src/talk/talk.data.ts; do
