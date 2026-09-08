@@ -1,6 +1,6 @@
 {
   "name": "@gojhonny/orbz",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A framework-agnostic, customizable AI voice orb built as a strict, SSR-safe web component.",
   "type": "module",
   "license": "MIT",
