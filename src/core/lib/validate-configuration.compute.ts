@@ -68,8 +68,26 @@ export function readOrbzConfigurationSource(input: unknown): OrbzResolvedConfigu
   if (!Object.hasOwn(appearance, 'byState')) {
     appearance.byState = cloneOrbzConfigurationInput(ORBZ_DEFAULT_APPEARANCE_BY_STATE)
   }
+  // The accidental 1.0.1 identifier is accepted only in its exact legacy shape.
+  // Normalize our clone before canonical validation; preserve every palette value.
+  if (Array.isArray(appearance.presetNames) && appearance.presetNames[0] === 'gojhonny') {
+    tuple(appearance.presetNames, '$.appearance.presetNames', [
+      'gojhonny',
+      'periwinkle',
+      'magenta',
+      'peach',
+      'mocha',
+      'ivory'
+    ])
+    const legacy = record(appearance.presets, '$.appearance.presets', appearance.presetNames)
+    appearance.presets = Object.fromEntries(
+      Object.entries(legacy).map(([key, value]) => [key === 'gojhonny' ? 'neongate' : key, value])
+    )
+    appearance.presetNames[0] = 'neongate'
+  }
+  if (appearance.defaultPreset === 'gojhonny') appearance.defaultPreset = 'neongate'
   const presets = tuple(appearance.presetNames, '$.appearance.presetNames', [
-    'gojhonny',
+    'neongate',
     'periwinkle',
     'magenta',
     'peach',

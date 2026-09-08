@@ -21,3 +21,7 @@ alwaysApply: true
 11. npm identity and GitHub ownership are independent: publish `@neongate-ai/orbz`
     from `gojhonny/orbz`. Preserve the published npm name when updating GitHub
     links or publisher configuration (ADR-0018 and SPEC-027).
+12. Preset branding is independent of npm and GitHub ownership. Keep NeonGate's
+    canonical identifier `neongate`, its established colors and six-name preset
+    list. Preserve the deprecated 1.0.1 alias only at compatibility boundaries
+    (ADR-0019 and SPEC-028); do not promote account handles into preset branding.

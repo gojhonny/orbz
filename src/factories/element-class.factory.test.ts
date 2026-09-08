@@ -18,6 +18,22 @@ describe('factory/element-class', () => {
     expect(createOrbz().shadowRoot).toBeNull()
   })
 
+  it('uses NeonGate by default and reflects canonical and deprecated preset assignments', () => {
+    const orb = createOrbz()
+    expect(orb.preset).toBe('neongate')
+    orb.preset = 'neongate'
+    expect(orb.getAttribute('preset')).toBe('neongate')
+    orb.setAttribute('preset', 'gojhonny')
+    expect(orb.getAttribute('preset')).toBe('neongate')
+    expect(orb.preset).toBe('neongate')
+    orb.preset = 'gojhonny'
+    expect(orb.getAttribute('preset')).toBe('neongate')
+    orb.preset = 'peach'
+    expect(orb.getAttribute('preset')).toBe('peach')
+    orb.removeAttribute('preset')
+    expect(orb.preset).toBe('neongate')
+  })
+
   it('normalizes reflected appearance and speech attributes', () => {
     const orb = createOrbz()
 
