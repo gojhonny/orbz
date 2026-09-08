@@ -24,3 +24,7 @@ and the separate npm publication boundary.
 
 [ADR-0018](0018-preserve-npm-package-identity.adr.md) supersedes ADR-0017's npm
 identity change: keep `@neongate-ai/orbz` while GitHub remains `gojhonny/orbz`.
+
+[ADR-0019](0019-neongate-preset-identity.adr.md) supersedes the preset identity
+decision in ADR-0017/0018: NeonGate remains `neongate`, with a deprecated alias
+for the accidental identifier published in 1.0.1.

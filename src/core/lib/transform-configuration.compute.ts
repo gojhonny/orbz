@@ -16,8 +16,14 @@ import { readOrbzConfigurationSource } from './validate-configuration.compute'
  */
 export function transformOrbzConfiguration(input: unknown): OrbzConfiguration {
   const source = readOrbzConfigurationSource(input)
+  // Keep the published palette lookup without exposing a seventh preset.
+  const presets = Object.defineProperty(source.appearance.presets, 'gojhonny', {
+    value: source.appearance.presets.neongate,
+    enumerable: false
+  }) as OrbzConfiguration['appearance']['presets']
   return deepFreezeOrbzConfiguration({
     ...source,
+    appearance: { ...source.appearance, presets },
     component: {
       ...source.component,
       observedAttributes: [

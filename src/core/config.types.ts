@@ -7,13 +7,18 @@ import type {
 export type OrbzStates = readonly ['idle', 'listening', 'thinking', 'speaking', 'asleep']
 export type OrbzReducedMotionModes = readonly ['system', 'always', 'never']
 export type OrbzPresetNames = readonly [
-  'gojhonny',
+  'neongate',
   'periwinkle',
   'magenta',
   'peach',
   'mocha',
   'ivory'
 ]
+/** @deprecated Use the canonical NeonGate identifier in new configuration. */
+type LegacyPresetNames = readonly ['gojhonny', ...OmitFirst<OrbzPresetNames>]
+type OmitFirst<T extends readonly unknown[]> = T extends readonly [unknown, ...infer Rest]
+  ? Rest
+  : never
 export type OrbzColorKeys = readonly ['accent', 'background', 'highlight', 'primary', 'secondary']
 
 type State = OrbzStates[number]
@@ -49,6 +54,21 @@ export interface OrbzAppearanceConfiguration {
   colorAttributes: { [Key in Color]: `color-${Key}` }
   presets: Record<Preset, Record<Color, string>>
   byState: Record<State, { contrast: number; saturation: number }>
+}
+
+/** Compatibility input for the preset identifier accidentally published in 1.0.1. */
+interface LegacyAppearanceConfiguration
+  extends Omit<OrbzAppearanceConfiguration, 'defaultPreset' | 'presetNames' | 'presets'> {
+  defaultPreset: LegacyPresetNames[number]
+  presetNames: LegacyPresetNames
+  presets: Record<LegacyPresetNames[number], Record<Color, string>>
+}
+
+interface OrbzRuntimeAppearanceConfiguration extends OrbzAppearanceConfiguration {
+  presets: OrbzAppearanceConfiguration['presets'] & {
+    /** @deprecated Use neongate; retained as a non-enumerable palette alias. */
+    gojhonny: Record<Color, string>
+  }
 }
 
 export interface OrbzMotionConfigurationSource {
@@ -100,7 +120,10 @@ export interface OrbzRealtimeConfiguration {
 /** Compact build input; legacy internal overrides remain supported. */
 export interface OrbzConfigurationSource {
   component: OrbzComponentConfiguration
-  appearance: Omit<OrbzAppearanceConfiguration, 'byState'> & {
+  appearance: (
+    | Omit<OrbzAppearanceConfiguration, 'byState'>
+    | Omit<LegacyAppearanceConfiguration, 'byState'>
+  ) & {
     byState?: OrbzAppearanceConfiguration['byState']
   }
   motion?: OrbzMotionConfigurationSource
@@ -122,7 +145,9 @@ export interface OrbzMotionConfiguration
   reduced: Record<State, OrbzMotionProfile>
 }
 
-export interface OrbzRuntimeConfiguration extends Omit<OrbzResolvedConfigurationSource, 'motion'> {
+export interface OrbzRuntimeConfiguration
+  extends Omit<OrbzResolvedConfigurationSource, 'appearance' | 'motion'> {
+  appearance: OrbzRuntimeAppearanceConfiguration
   motion: OrbzMotionConfiguration
 }
 

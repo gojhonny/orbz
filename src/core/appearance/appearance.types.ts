@@ -2,7 +2,9 @@ import type { ORBZ_PRESET_NAMES, ORBZ_REDUCED_MOTION_MODES, ORBZ_STATES } from '
 
 export type OrbzState = (typeof ORBZ_STATES)[number]
 export type OrbzReducedMotion = (typeof ORBZ_REDUCED_MOTION_MODES)[number]
-export type OrbzPresetName = (typeof ORBZ_PRESET_NAMES)[number]
+/** @deprecated Use neongate; the accidentally published name remains accepted. */
+type LegacyPresetName = 'gojhonny'
+export type OrbzPresetName = (typeof ORBZ_PRESET_NAMES)[number] | LegacyPresetName
 export type OrbzSize = number | string
 
 export interface OrbzColors {

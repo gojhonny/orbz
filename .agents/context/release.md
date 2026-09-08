@@ -23,9 +23,13 @@ lifecycle. Harness-score remains explicit engineering-only tooling and is never
 part of the runtime API.
 
 ADR-0018/SPEC-027 retain `@neongate-ai/orbz` for npm while `gojhonny/orbz` remains
-the GitHub repository. Existing dependency/import strings stay valid. SPEC-026's
-separate default-preset rename to `gojhonny` still requires migration for explicit
-preset consumers. Neither change bumps version 1.0.0 or authorizes publication.
+the GitHub repository. Existing dependency/import strings stay valid.
+ADR-0019/SPEC-028 restore NeonGate (`neongate`) as the canonical default and keep
+the accidentally published `gojhonny` name only as a deprecated compatibility
+alias. The correction carries forward main's 1.0.1 metadata into staging without
+a new bump or publication. npm consumers receive it only with a future release;
+until then, examples can select NeonGate through `DEFAULT_ORBZ_PRESET` or omit
+the explicit preset, preserving compatibility with the existing 1.0.1 package.
 Configure the existing npm package's publisher for the current GitHub repository;
 the npm and GitHub account names do not need to match. Never overwrite a published
 version or move its release tag.

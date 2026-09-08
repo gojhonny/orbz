@@ -63,6 +63,7 @@ status only when the corresponding evidence is available.
   migrate package identity to `gojhonny`, and refresh docs and deterministic audits.
   Delivery is one PR against `staging`; no merge, version bump, tag or publication.
   SPEC-027 supersedes its npm identity migration only.
+  SPEC-028 subsequently supersedes its preset rename while preserving colors.
 
 ## Published npm identity
 
@@ -70,3 +71,10 @@ status only when the corresponding evidence is available.
   published `@neongate-ai/orbz` package while retaining GitHub owner `gojhonny`.
   Update installer, release automation, documentation and ownership audits.
   Delivery is one PR against `staging`; no version bump or publication.
+
+## NeonGate preset identity
+
+- [SPEC-028](028-restore-neongate-preset.spec.md): implemented; restore NeonGate
+  branding and canonical `neongate` configuration, retaining deprecated 1.0.1
+  compatibility without adding another enumerated palette. Base on current main
+  to preserve its 1.0.1 release metadata in the PR against `staging`.

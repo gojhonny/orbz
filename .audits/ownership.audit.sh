@@ -61,11 +61,17 @@ try {
   pass('active text preserves npm identity and rejects obsolete GitHub ownership and the abandoned npm name')
 
   const appearance = JSON.parse(read('src/orbz.config.json')).appearance
-  assert.equal(appearance.defaultPreset, 'gojhonny')
+  assert.equal(appearance.defaultPreset, 'neongate')
   assert.deepEqual(appearance.presetNames,
-    ['gojhonny', 'periwinkle', 'magenta', 'peach', 'mocha', 'ivory'])
+    ['neongate', 'periwinkle', 'magenta', 'peach', 'mocha', 'ivory'])
   assert.deepEqual(Object.keys(appearance.presets), appearance.presetNames)
-  pass('default preset and all supported palette keys agree')
+  assert.deepEqual(appearance.presets.neongate, {
+    accent: '#FF4DDE', background: '#14142B', highlight: '#FFB07A',
+    primary: '#6C5CFF', secondary: '#00E9FF'
+  })
+  assert.ok(!read('README.md').includes('preset="gojhonny"'))
+  assert.ok(!read('README.md').includes('| `gojhonny` |'))
+  pass('NeonGate branding, canonical palette names and established colors remain independent of GitHub ownership')
 
   const packageDirectory = path.join(temporary, 'package')
   const consumer = path.join(temporary, 'consumer project')
@@ -107,7 +113,7 @@ FIXTURE
   assert.equal(installed.status, 0, installed.stderr)
   assert.equal(JSON.parse(fs.readFileSync(manifest, 'utf8')).dependencies?.[pkg.name], pkg.version)
   assert.ok(installed.stdout.includes("import '@neongate-ai/orbz/browser'"))
-  assert.ok(installed.stdout.includes('preset="gojhonny"'))
+  assert.ok(installed.stdout.includes('preset="neongate"'))
   assert.equal(fs.readFileSync(source, 'utf8'), 'export const existingApplication = true\n')
   assert.deepEqual(fs.readdirSync(consumer).sort(), ['app.js', 'package.json'])
   pass('published setup installs the existing npm package at its own version and preserves consumer source')
