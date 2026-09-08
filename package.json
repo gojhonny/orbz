@@ -1,10 +1,10 @@
 {
-  "name": "@neongate-ai/orbz",
+  "name": "@gojhonny/orbz",
   "version": "1.0.0",
   "description": "A framework-agnostic, customizable AI voice orb built as a strict, SSR-safe web component.",
   "type": "module",
   "license": "MIT",
-  "author": "Neongate AI <dev.neongate@gmail.com>",
+  "author": "gojhonny",
   "main": "./dist/orbz.js",
   "module": "./dist/orbz.js",
   "types": "./dist/orbz.d.ts",
@@ -23,10 +23,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NeonGate-AI/orbz.git"
+    "url": "git+https://github.com/gojhonny/orbz.git"
   },
   "bugs": {
-    "url": "https://github.com/NeonGate-AI/orbz/issues"
+    "url": "https://github.com/gojhonny/orbz/issues"
   },
   "homepage": "https://orbz.site",
   "keywords": [

@@ -1,6 +1,6 @@
 # Orbz engineering harness
 
-This directory is the versioned engineering context for `@neongate-ai/orbz`.
+This directory is the versioned engineering context for `@gojhonny/orbz`.
 It records product intent, durable decisions, mandatory rules, bounded changes,
 and the evidence used to maintain the package.
 

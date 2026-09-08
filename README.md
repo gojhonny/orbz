@@ -11,25 +11,26 @@
 
 <p align="center">
   <a href="https://paladini.io/harness-score/guide/maturity-model.html"><img alt="Harness Score L4" src="https://paladini.github.io/harness-score/maturity/badge-l4.svg" height="20"></a>
-  <a href="https://github.com/NeonGate-AI/orbz/actions/workflows/ci.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/NeonGate-AI/orbz/ci.yml?branch=main&label=tests&logo=github" height="20"></a>
-  <a href="https://www.npmjs.com/package/@neongate-ai/orbz"><img alt="npm version" src="https://img.shields.io/npm/v/%40neongate-ai%2Forbz?logo=npm" height="20"></a>
+  <a href="https://github.com/gojhonny/orbz/actions/workflows/ci.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/gojhonny/orbz/ci.yml?branch=main&label=tests&logo=github" height="20"></a>
+  <a href="https://www.npmjs.com/package/@gojhonny/orbz"><img alt="npm version" src="https://img.shields.io/npm/v/%40gojhonny%2Forbz?logo=npm" height="20"></a>
 </p>
 
 ## TLDR
 
-`@neongate-ai/orbz` is a framework-agnostic, SSR-safe Web Component for giving
+`@gojhonny/orbz` is a framework-agnostic, SSR-safe Web Component for giving
 AI voice interfaces a visible state, motion system, configurable palette, and
 provider-neutral speech boundary. The package renders the native `<orb-z>`
 element. Applications own the persona, transcript UI, session authorization,
 and backend integrations.
 
-This source describes the **1.0.0** release, including canonical configuration,
-`voiceModel`, direct Realtime audio and the unified Orb CLI. Earlier npm versions
-do not include these additions. Check the npm version badge for publication status.
+This source is version **1.0.0**, including compact configuration, `voiceModel`,
+direct Realtime audio and the unified Orb CLI. The package identity is now
+`@gojhonny/orbz`; this repository change does not publish the new npm scope.
+Installation commands below require that package to be published first.
 
 <p align="center">
   <a href="https://orbz.site"><strong>Documentation</strong></a>&nbsp;&nbsp;&nbsp;
-  <a href="https://www.npmjs.com/package/@neongate-ai/orbz"><strong>npm package</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.npmjs.com/package/@gojhonny/orbz"><strong>npm package</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="./LICENSE"><strong>License</strong></a>
 </p>
 
@@ -37,12 +38,21 @@ do not include these additions. Check the npm version badge for publication stat
 
 ## Getting started
 
+### Ownership migration
+
+When upgrading from the previous package scope, install `@gojhonny/orbz`, update
+all imports and package-manager commands to that scope, and change any explicitly
+named default preset to `gojhonny`. Remove the previous dependency once imports
+are migrated. The five palette colors, `orb` binary and `<orb-z>` element remain
+the same; the previous package and preset names are not compatibility aliases.
+Publishing and npm trusted-publisher setup are separate release steps.
+
 ### Install with npx
 
 Run Orb from an existing JavaScript project:
 
 ```bash
-npx -y --package=@neongate-ai/orbz@latest orb
+npx -y --package=@gojhonny/orbz@latest orb
 ```
 
 This explicit `--package ... orb` form is the canonical npx invocation. It does
@@ -55,7 +65,7 @@ when you want npm to confirm the temporary download.
 Manual installation remains available:
 
 ```bash
-pnpm add @neongate-ai/orbz
+pnpm add @gojhonny/orbz
 ```
 
 Register the element from browser-only code and render it in HTML:
@@ -64,8 +74,8 @@ Register the element from browser-only code and render it in HTML:
 import {
   type OrbzElement,
   WebSpeechAdapter
-} from '@neongate-ai/orbz'
-import '@neongate-ai/orbz/browser'
+} from '@gojhonny/orbz'
+import '@gojhonny/orbz/browser'
 
 const orb = document.querySelector<OrbzElement>('orb-z')
 const speakButton = document.querySelector<HTMLButtonElement>('#speak')
@@ -84,7 +94,7 @@ if (orb && speakButton) {
 <orb-z
   aria-label="Assistente de voz"
   role="img"
-  preset="neongate"
+  preset="gojhonny"
   state="idle"
 ></orb-z>
 <button id="speak" type="button">Ouvir mensagem</button>
@@ -124,7 +134,7 @@ pnpm exec orb --help
 pnpm exec orb setup --dry-run
 ```
 
-`orb setup` installs `@neongate-ai/orbz` into an existing project. Useful
+`orb setup` installs `@gojhonny/orbz` into an existing project. Useful
 options are:
 
 | Option | Purpose |
@@ -138,9 +148,9 @@ options are:
 For example:
 
 ```bash
-npx -y --package=@neongate-ai/orbz@latest orb --package-manager pnpm
-npx -y --package=@neongate-ai/orbz@latest orb --project ./apps/web
-npx -y --package=@neongate-ai/orbz@latest orb --dry-run
+npx -y --package=@gojhonny/orbz@latest orb --package-manager pnpm
+npx -y --package=@gojhonny/orbz@latest orb --project ./apps/web
+npx -y --package=@gojhonny/orbz@latest orb --dry-run
 ```
 
 Repository engineering commands such as `orb test`, `orb check`, `orb audit`,
@@ -156,7 +166,7 @@ If you explicitly want `orb` available on your global `PATH`, install the packag
 globally instead of using npx:
 
 ```bash
-npm install --global @neongate-ai/orbz@latest
+npm install --global @gojhonny/orbz@latest
 orb --help
 ```
 
@@ -214,8 +224,8 @@ chooses its supported speaker voice. Model and voice availability are enforced
 by the application server and provider.
 
 ```ts
-import type { OrbzElement } from '@neongate-ai/orbz'
-import '@neongate-ai/orbz/browser'
+import type { OrbzElement } from '@gojhonny/orbz'
+import '@gojhonny/orbz/browser'
 
 const orb = document.querySelector<OrbzElement>('orb-z')!
 orb.voiceModel = {
@@ -437,7 +447,7 @@ Set `preset` to use one of the last five-color of the year palettes.
 
 | Preset | Primary | Secondary | Accent | Highlight | Background |
 | --- | --- | --- | --- | --- | --- |
-| `neongate` | `#6C5CFF` | `#00E9FF` | `#FF4DDE` | `#FFB07A` | `#14142B` |
+| `gojhonny` | `#6C5CFF` | `#00E9FF` | `#FF4DDE` | `#FFB07A` | `#14142B` |
 | `periwinkle` | `#6667AB` | `#8FB8FF` | `#E66FA9` | `#F3ECFF` | `#111226` |
 | `magenta` | `#BB2649` | `#F06A82` | `#29B8A6` | `#FFDCE4` | `#250A12` |
 | `peach` | `#FFBE98` | `#FF8F70` | `#D987A3` | `#FFF0E7` | `#2A1516` |
@@ -448,7 +458,7 @@ Set `preset` to use one of the last five-color of the year palettes.
 <orb-z preset="peach" state="listening"></orb-z>
 ```
 
-The default palette is `neongate`. Omitting `preset` also allows individual
+The default palette is `gojhonny`. Omitting `preset` also allows individual
 color overrides to merge with that default palette.
 
 ### Custom palette
@@ -539,17 +549,17 @@ The main package entry is safe to import when `HTMLElement` and
 `customElements` are unavailable. Import the browser entry only in client code:
 
 ```ts
-import type { OrbzElement } from '@neongate-ai/orbz'
+import type { OrbzElement } from '@gojhonny/orbz'
 
 // Client boundary only:
-await import('@neongate-ai/orbz/browser')
+await import('@gojhonny/orbz/browser')
 ```
 
 React and Next.js can opt into native JSX typing without a wrapper component:
 
 ```ts
-import '@neongate-ai/orbz/react-types'
-import '@neongate-ai/orbz/browser'
+import '@gojhonny/orbz/react-types'
+import '@gojhonny/orbz/browser'
 ```
 
 The rendered UI remains `<orb-z>`. `className` is intentionally excluded from
@@ -561,11 +571,11 @@ layout.
 
 | Import | Purpose |
 | --- | --- |
-| `@neongate-ai/orbz` | Types, constants, factories, ports, adapters, and explicit registration API. |
-| `@neongate-ai/orbz/browser` | Main API plus browser registration side effect. |
-| `@neongate-ai/orbz/react-types` | Type-only React JSX augmentation. |
-| `@neongate-ai/orbz/standalone` | Direct-browser/CDN bundle. |
-| `@neongate-ai/orbz/index.css` | Explicit stylesheet export. |
+| `@gojhonny/orbz` | Types, constants, factories, ports, adapters, and explicit registration API. |
+| `@gojhonny/orbz/browser` | Main API plus browser registration side effect. |
+| `@gojhonny/orbz/react-types` | Type-only React JSX augmentation. |
+| `@gojhonny/orbz/standalone` | Direct-browser/CDN bundle. |
+| `@gojhonny/orbz/index.css` | Explicit stylesheet export. |
 | `orb` package binary | POSIX shell installer used by the explicit npx invocation above. |
 
 <br>
@@ -603,6 +613,19 @@ orb check
 orb cleanup
 ```
 
+`orb cleanup` (or `orb clean`) removes untracked generated state, including root
+and nested `node_modules`, by default. Preview the targets or keep dependencies:
+
+```bash
+orb cleanup --dry-run
+orb cleanup --keep-dependencies
+```
+
+The legacy `--dependencies` flag remains accepted. Cleanup preserves Git-tracked
+paths, source, assets and harness directories, and never follows directory
+symlinks. Run `orb bootstrap` after default cleanup to reinstall dependencies
+before building or checking the repository.
+
 Before the optional user-scoped launcher exists, use the repository entry point:
 
 ```bash
@@ -615,7 +638,7 @@ Before the optional user-scoped launcher exists, use the repository entry point:
 public script aliases.
 
 The same shell CLI is published as the `orb` package binary so that
-`npx -y --package=@neongate-ai/orbz@latest orb` can install Orbz into a
+`npx -y --package=@gojhonny/orbz@latest orb` can install Orbz into a
 consuming project. Repository-only commands reject execution from the temporary npm package.
 
 ### Agent harness
@@ -683,31 +706,33 @@ under `test/`. The intentional package payload is `dist/`, the POSIX shell
 
 ## Release review
 
-SPEC-016 through SPEC-022 track these changes and their evidence in the
-[specification catalog](./.agents/specs/readme.md). The owner authorized validation,
-conflict resolution and merging eligible PRs into staging. An unresolved validation
-blocks that PR's merge; another eligible PR may proceed while the issue is parked.
-The catalog records dependency order and distinguishes executed checks from
-outstanding behavioral or live-provider acceptance.
+The [specification catalog](./.agents/specs/readme.md) records implementation
+evidence and outstanding behavioral or live-provider acceptance. SPEC-016 through
+SPEC-022 describe an earlier batch whose eligible PRs had owner authorization to
+merge into `staging`; SPEC-024 records the separate first-major release plan.
+Those historical authorizations do not apply to later work.
 
-SPEC-024 records the owner-authorized **1.0.0** release to `main`. The release
-workflow validates and packs the source, tags the exact commit, publishes that
-tarball, verifies npm integrity and creates the GitHub release. A tag alone does
-not confirm npm publication; check the release workflow and npm version badge.
+SPEC-026 covers the cleanup repair and ownership migration. Its scope ends at a
+PR against `staging`, with version **1.0.0** unchanged and no merge, release tag
+or npm publication. A future authorized release must configure npm ownership and
+publishing for `@gojhonny/orbz`. The release workflow validates and packs source,
+tags the exact commit, publishes that tarball, verifies npm integrity and creates
+the GitHub release. A repository change or tag alone does not confirm publication.
 
 When upgrading from 0.4.3, applications keep provider credentials on their backend
-and supply short-lived session authorization through the JavaScript instance.
+and supply an application session endpoint or authorizer through `realtimeSession`.
 Never put credentials in attributes or `orbz.config.json`. `realtimeSession`
 accepts only documented options and rejects unknown fields. Forks configure
-public defaults in `src/orbz.config.json` and rebuild; the JSON is bundled into
-the existing package entry points. Real microphone/provider acceptance remains
-separate from the automated tests.
+component, palette and Realtime defaults in `src/orbz.config.json`; internal
+appearance, motion and speech defaults live in the data modules listed above.
+Rebuild to bundle these defaults into the package entry points. Real
+microphone/provider acceptance remains separate from the automated tests.
 
 <br>
 
 ## License
 
-**MIT © NeonGate AI**
+**MIT © gojhonny**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

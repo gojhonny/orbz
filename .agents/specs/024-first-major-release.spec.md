@@ -78,7 +78,7 @@ message-based ignores are disabled so merge-looking ordinary commits still fail.
 
 The first stable release commits to the documented public API. Live browser voice
 latency and microphone/provider acceptance remain deferred evidence. npm account
-authorization is external: configure trusted publisher NeonGate-AI/orbz with
+authorization is external: configure trusted publisher gojhonny/orbz with
 workflow filename release.yml and direct npm publish permission, or use an
 existing scoped publishing token in the repository secret NPM_TOKEN. No
 environment name is configured. This delivery does not change npm account access.

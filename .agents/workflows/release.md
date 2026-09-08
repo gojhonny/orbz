@@ -26,11 +26,15 @@ dispatch from main. It performs the full prepack gate, rejects stale main heads
 and conflicting tags, and publishes the validated tarball. Matching published
 artifacts can be verified on retry; existing tags and npm versions are immutable.
 
-Configure npm trusted publishing for organization `NeonGate-AI`, repository
+Configure npm trusted publishing for the personal GitHub account `gojhonny`, repository
 `orbz`, workflow filename `release.yml`, no environment name, and allow direct
 `npm publish`. An existing repository secret `NPM_TOKEN` is also supported.
 Credentials are never committed or printed. See the
 [npm trusted publisher documentation](https://docs.npmjs.com/trusted-publishers/).
+
+ADR-0017/SPEC-026 change the package scope to `@gojhonny/orbz`; they authorize a
+PR against `staging`, not publication. Confirm npm ownership of that scope and
+configure its publisher separately before authorizing the first release there.
 
 The workflow creates the GitHub release only after npm integrity and the public
 Orb binary are verified. If npm authorization fails after tagging, the tag is

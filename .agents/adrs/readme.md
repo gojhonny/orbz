@@ -17,3 +17,7 @@ ADR to hide a changed decision; record the update and supersede it explicitly.
 
 [ADR-0016](0016-compact-configuration-and-internal-data.adr.md) partially supersedes
 ADR-0013: compact JSON plus typed internal data defaults and compatible composition.
+
+[ADR-0017](0017-gojhonny-package-identity.adr.md) records the owner-requested package,
+repository and default-preset identity migration, including consumer compatibility
+and the separate npm publication boundary.

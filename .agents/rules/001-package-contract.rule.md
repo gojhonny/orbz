@@ -8,10 +8,10 @@ alwaysApply: true
 - Priority: Critical
 - Applies: Always
 
-1. `@neongate-ai/orbz` is a library, not an application or monorepo.
+1. `@gojhonny/orbz` is a library, not an application or monorepo.
 2. Keep the package framework-agnostic and SSR-safe.
 3. Keep `<orb-z>` as the only runtime UI implementation.
-4. `@neongate-ai/orbz/browser` owns registration side effects.
+4. `@gojhonny/orbz/browser` owns registration side effects.
 5. `react-types` is type-only and must not add a React runtime dependency.
 6. Provider secrets belong to consuming applications.
 7. Intentional npm payload is limited to `dist/`, the shell-only `cli/`, and npm root metadata.

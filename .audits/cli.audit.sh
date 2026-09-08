@@ -155,7 +155,7 @@ cat > "$orb_tmp/project/package.json" <<'JSON'
   "packageManager": "pnpm@10.32.1"
 }
 JSON
-if (cd "$orb_tmp/project" && "$orb_tmp/package/cli/orb" --dry-run) | grep -F 'pnpm add @neongate-ai/orbz@' >/dev/null 2>&1; then
+if (cd "$orb_tmp/project" && "$orb_tmp/package/cli/orb" --dry-run) | grep -F 'pnpm add @gojhonny/orbz@' >/dev/null 2>&1; then
   pass 'published CLI routes directly to project setup and detects pnpm'
 else
   fail 'published CLI does not select project setup correctly'
@@ -166,7 +166,7 @@ cat > "$orb_tmp/project/package.json" <<'JSON'
   "name": "orb-consumer-audit",
   "private": true,
   "dependencies": {
-    "@neongate-ai/orbz": "^0.4.0"
+    "@gojhonny/orbz": "^0.4.0"
   }
 }
 JSON
