@@ -1,6 +1,6 @@
 # Product context
 
-Orbz is the `@gojhonny/orbz` package: a framework-agnostic, SSR-safe visual
+Orbz is the `@neongate-ai/orbz` package: a framework-agnostic, SSR-safe visual
 presence for AI voice experiences. It exposes one native custom element,
 `<orb-z>`, plus typed ports and optional speech adapters.
 

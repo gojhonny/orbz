@@ -111,7 +111,7 @@ done
 if awk '
   BEGIN {
     expected[1] = "<a href=\"https://orbz.site\"><strong>Documentation</strong></a>"
-    expected[2] = "<a href=\"https://www.npmjs.com/package/@gojhonny/orbz\"><strong>npm package</strong></a>"
+    expected[2] = "<a href=\"https://www.npmjs.com/package/@neongate-ai/orbz\"><strong>npm package</strong></a>"
     expected[3] = "<a href=\"./LICENSE\"><strong>License</strong></a>"
   }
   /^[[:space:]]*<p align="center">[[:space:]]*$/ {
@@ -184,7 +184,7 @@ for token in \
   'orb check' \
   'orb cleanup --dry-run' \
   'orb cleanup --keep-dependencies' \
-  'npx -y --package=@gojhonny/orbz@latest orb' \
+  'npx -y --package=@neongate-ai/orbz@latest orb' \
   lint-staged \
   Commitlint \
   SemVer
@@ -203,7 +203,7 @@ done
 for token in \
   'paladini.github.io/harness-score/maturity/badge-l4.svg' \
   'github/actions/workflow/status/gojhonny/orbz/ci.yml' \
-  'img.shields.io/npm/v/%40gojhonny%2Forbz' \
+  'img.shields.io/npm/v/%40neongate-ai%2Forbz' \
   '## Orb CLI' \
   'pnpm exec orb --help' \
   'npm exec -- orb --help'

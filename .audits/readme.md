@@ -19,7 +19,7 @@ The complete quality gate also runs them through `./cli/orb check`.
 - `harness.audit.sh`: record structure, frontmatter, dates, navigation, and terminology.
 - `guardrails.audit.sh`: Cursor hook configuration, shell gate decisions, edit-hook containment, workflows, and reviewer metadata.
 - `package.audit.sh`: payload, scripts, dependencies, hooks, Commitlint, and SemVer policy.
-- `ownership.audit.sh`: current package/repository identity, preset consistency and absence of previous-owner references.
+- `ownership.audit.sh`: independent npm package and GitHub owner identities, preset consistency, installer behavior and rejection of stale active references.
 - `tests.audit.sh`: colocated suite layout, naming, Vitest configuration, and CI integration.
 
 When an invariant changes intentionally, update its SPEC, linked ADR/rule,

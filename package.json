@@ -1,5 +1,5 @@
 {
-  "name": "@gojhonny/orbz",
+  "name": "@neongate-ai/orbz",
   "version": "1.0.0",
   "description": "A framework-agnostic, customizable AI voice orb built as a strict, SSR-safe web component.",
   "type": "module",

@@ -1,9 +1,13 @@
 # ADR-0017: Move Orbz package identity to gojhonny
 
-- Status: Accepted
+- Status: Accepted; npm identity decision superseded by ADR-0018
 - Created: 2026-09-08
 - Updated: 2026-09-08
 - Mode: Prospective
+
+The original decision and evidence below are historical. ADR-0018/SPEC-027 retain
+the published npm package `@neongate-ai/orbz` while preserving this record's
+GitHub owner, author/assets and default-preset decisions.
 
 ## Context
 

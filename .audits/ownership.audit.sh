@@ -18,42 +18,47 @@ const pkg = JSON.parse(read('package.json'))
 const pass = (message) => console.log(`PASS  ${message}`)
 
 try {
-  assert.equal(pkg.name, '@gojhonny/orbz', 'package must use the current npm scope')
+  assert.equal(pkg.name, '@neongate-ai/orbz', 'package must preserve the published npm identity')
   assert.equal(pkg.author, 'gojhonny', 'author must use the owner handle without an invented email')
   assert.equal(pkg.repository?.url, 'git+https://github.com/gojhonny/orbz.git')
   assert.equal(pkg.bugs?.url, 'https://github.com/gojhonny/orbz/issues')
   assert.match(read('LICENSE'), /Copyright \(c\) 2026 gojhonny/)
-  pass('package metadata and license identify gojhonny')
+  pass('npm identity is preserved while GitHub metadata and license identify gojhonny')
 
   const release = read('.github/workflows/release.yml')
   for (const token of [
     "github.repository == 'gojhonny/orbz' && github.ref == 'refs/heads/main'",
-    "name !== '@gojhonny/orbz'",
-    'gojhonny-orbz-${version}.tgz',
-    'https://registry.npmjs.org/@gojhonny%2forbz/',
-    'npm view "@gojhonny/orbz@$RELEASE_VERSION" dist.integrity',
-    'npm exec --yes --package="@gojhonny/orbz@$RELEASE_VERSION" -- orb --help'
+    "name !== '@neongate-ai/orbz'",
+    'neongate-ai-orbz-${version}.tgz',
+    'https://registry.npmjs.org/@neongate-ai%2forbz/',
+    'npm view "@neongate-ai/orbz@$RELEASE_VERSION" dist.integrity',
+    'npm exec --yes --package="@neongate-ai/orbz@$RELEASE_VERSION" -- orb --help'
   ]) {
     assert.ok(release.includes(token), `release identity is missing: ${token}`)
   }
   pass('release owner guard, tarball, registry and public binary use the same package')
 
-  // Include new files before staging; ignore tracked deletions and binary assets.
-  const previousOwner = ['neon', 'gate'].join('')
+  // Include new files before staging; keep superseded decisions as historical evidence.
+  const historicalRecords = new Set([
+    '.agents/specs/026-cli-cleanup-and-gojhonny-ownership.spec.md',
+    '.agents/adrs/0017-gojhonny-package-identity.adr.md'
+  ])
+  const abandonedNpmName = '@' + 'gojhonny/orbz'
+  const staleGithubOwner = /(?:github\.com[/:]|githubusercontent\.com\/|github\/actions\/workflow\/status\/)neongate(?:-ai)?\//i
   const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], {
     cwd: root, encoding: 'utf8'
   }).split('\0').filter(Boolean)
   for (const file of new Set(files)) {
     const absolute = path.join(root, file)
-    if (!fs.existsSync(absolute)) continue
-    assert.ok(!file.toLowerCase().includes(previousOwner), `previous owner remains in filename: ${file}`)
+    if (!fs.existsSync(absolute) || historicalRecords.has(file)) continue
     if (!fs.lstatSync(absolute).isFile()) continue
     const contents = fs.readFileSync(absolute)
     if (contents.includes(0)) continue
-    assert.ok(!contents.toString('utf8').toLowerCase().includes(previousOwner),
-      `previous owner remains in tracked text: ${file}`)
+    const text = contents.toString('utf8')
+    assert.ok(!staleGithubOwner.test(text), `obsolete GitHub ownership remains in active text: ${file}`)
+    assert.ok(!text.includes(abandonedNpmName), `abandoned npm identity remains in active text: ${file}`)
   }
-  pass('repository text and filenames contain no previous-owner references')
+  pass('active text preserves npm identity and rejects obsolete GitHub ownership and the abandoned npm name')
 
   const appearance = JSON.parse(read('src/orbz.config.json')).appearance
   assert.equal(appearance.defaultPreset, 'gojhonny')
@@ -84,12 +89,12 @@ try {
   fs.writeFileSync(npm, `#!/bin/sh
 set -eu
 [ "$#" -eq 3 ] && [ "$1" = install ] && [ "$2" = --save ]
-[ "$3" = "@gojhonny/orbz@$ORB_FIXTURE_VERSION" ]
+[ "$3" = "@neongate-ai/orbz@$ORB_FIXTURE_VERSION" ]
 [ "\${ORB_FIXTURE_SKIP_WRITE:-0}" != 1 ] || exit 0
 node <<'FIXTURE'
 const fs = require('node:fs')
 const data = JSON.parse(fs.readFileSync('package.json', 'utf8'))
-data.dependencies = { ...data.dependencies, '@gojhonny/orbz': process.env.ORB_FIXTURE_VERSION }
+data.dependencies = { ...data.dependencies, '@neongate-ai/orbz': process.env.ORB_FIXTURE_VERSION }
 fs.writeFileSync('package.json', JSON.stringify(data))
 FIXTURE
 `)
@@ -101,20 +106,32 @@ FIXTURE
   const installed = run(['--package-manager', 'npm'])
   assert.equal(installed.status, 0, installed.stderr)
   assert.equal(JSON.parse(fs.readFileSync(manifest, 'utf8')).dependencies?.[pkg.name], pkg.version)
-  assert.ok(installed.stdout.includes("import '@gojhonny/orbz/browser'"))
+  assert.ok(installed.stdout.includes("import '@neongate-ai/orbz/browser'"))
   assert.ok(installed.stdout.includes('preset="gojhonny"'))
   assert.equal(fs.readFileSync(source, 'utf8'), 'export const existingApplication = true\n')
   assert.deepEqual(fs.readdirSync(consumer).sort(), ['app.js', 'package.json'])
-  pass('published setup installs its own package version and prints the migrated registration snippet')
+  pass('published setup installs the existing npm package at its own version and preserves consumer source')
+
+  const existing = { ...initial, dependencies: { [pkg.name]: '^0.4.0' } }
+  const existingManifest = JSON.stringify(existing)
+  fs.writeFileSync(manifest, existingManifest)
+  const repeated = run(['--package-manager', 'npm'])
+  assert.equal(repeated.status, 0, repeated.stderr)
+  assert.equal(fs.readFileSync(manifest, 'utf8'), existingManifest)
+  assert.ok(repeated.stdout.includes(`${pkg.name} is already a project dependency`))
+  assert.equal(fs.readFileSync(source, 'utf8'), 'export const existingApplication = true\n')
+  pass('existing published-package dependency is preserved without a reinstall or source changes')
 
   reset()
   const noWrite = run(['--package-manager', 'npm'], {
     env: { ...env, ORB_FIXTURE_SKIP_WRITE: '1' }
   })
   assert.equal(noWrite.status, 1, 'setup must reject a manager that did not add the new dependency')
-  assert.ok(noWrite.stderr.includes('without adding @gojhonny/orbz to dependencies'))
-  const wrongPackage = run(['--package-spec', '@unrelated/orbz@1.0.0', '--dry-run'])
-  assert.equal(wrongPackage.status, 2, 'setup must reject a different package scope')
+  assert.ok(noWrite.stderr.includes('without adding @neongate-ai/orbz to dependencies'))
+  for (const packageName of [abandonedNpmName, '@unrelated/orbz']) {
+    const wrongPackage = run(['--package-spec', `${packageName}@1.0.0`, '--dry-run'])
+    assert.equal(wrongPackage.status, 2, `setup must reject package scope: ${packageName}`)
+  }
   fs.writeFileSync(manifest, JSON.stringify({ name: pkg.name }))
   assert.equal(run(['--dry-run']).status, 2, 'setup must reject installing into its own package')
   for (const command of ['cleanup', 'clean']) {
