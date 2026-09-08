@@ -112,25 +112,24 @@ if awk '
   BEGIN {
     expected[1] = "<a href=\"https://orbz.site\"><strong>Documentation</strong></a>"
     expected[2] = "<a href=\"https://www.npmjs.com/package/@neongate-ai/orbz\"><strong>npm package</strong></a>"
-    expected[3] = "<a href=\"https://github.com/NeonGate-AI/orbz-examples\"><strong>Framework examples</strong></a>"
-    expected[4] = "<a href=\"./LICENSE\"><strong>License</strong></a>"
+    expected[3] = "<a href=\"./LICENSE\"><strong>License</strong></a>"
   }
   /^[[:space:]]*<p align="center">[[:space:]]*$/ {
     active = 1; count = 0; valid = 1; next
   }
   active && /<a / {
     count++
-    if (count > 4 || index($0, expected[count]) == 0) valid = 0
+    if (count > 3 || index($0, expected[count]) == 0) valid = 0
   }
   active && /<\/p>/ {
-    if (valid && count == 4) found = 1
+    if (valid && count == 3) found = 1
     active = 0
   }
   END { exit(found ? 0 : 1) }
 ' README.md; then
   pass 'README resource links are centered with original labels and destinations'
 else
-  fail 'README must center Documentation, npm package, Framework examples, then License with their original destinations'
+  fail 'README must center Documentation, npm package, then License with their original destinations'
 fi
 
 # ---------------------------------------------------------------------------

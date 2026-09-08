@@ -1,7 +1,7 @@
 import type {
   OrbzConfiguration,
-  OrbzConfigurationSource,
   OrbzMotionConfigurationSource,
+  OrbzResolvedConfigurationSource,
   OrbzSerializedLayerMotion
 } from '@core/config.types'
 import type { OrbzLayerMotion, OrbzMotionProfile } from '@core/motion/motion.types'
@@ -35,8 +35,8 @@ export function transformOrbzConfiguration(input: unknown): OrbzConfiguration {
 
 function motionProfiles(
   profiles: OrbzMotionConfigurationSource['full'],
-  appearance: OrbzConfigurationSource['appearance']['byState']
-): Record<OrbzConfigurationSource['component']['states'][number], OrbzMotionProfile> {
+  appearance: OrbzResolvedConfigurationSource['appearance']['byState']
+): Record<OrbzResolvedConfigurationSource['component']['states'][number], OrbzMotionProfile> {
   return Object.fromEntries(
     Object.entries(profiles).map(([state, layers]) => [
       state,
@@ -50,7 +50,7 @@ function motionProfiles(
         root: layerMotion(layers.root)
       }
     ])
-  ) as Record<OrbzConfigurationSource['component']['states'][number], OrbzMotionProfile>
+  ) as Record<OrbzResolvedConfigurationSource['component']['states'][number], OrbzMotionProfile>
 }
 
 function layerMotion(layer: OrbzSerializedLayerMotion): OrbzLayerMotion {

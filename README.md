@@ -29,8 +29,7 @@ do not include these additions. Check the npm version badge for publication stat
 
 <p align="center">
   <a href="https://orbz.site"><strong>Documentation</strong></a>&nbsp;&nbsp;&nbsp;
-  <a href="https://www.npmjs.com/package/@neongate-ai/orbz"><strong>npm package</strong></a>&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/NeonGate-AI/orbz-examples"><strong>Framework examples</strong></a>&nbsp;&nbsp;&nbsp;
+  <a href="https://www.npmjs.com/package/@neongate-ai/orbz"><strong>npm package</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="./LICENSE"><strong>License</strong></a>
 </p>
 
@@ -166,35 +165,37 @@ POSIX-compatible shell environment).
 
 <br>
 
-## Canonical configuration
+## Compact configuration
 
-Fork maintainers edit [`src/orbz.config.json`](./src/orbz.config.json) and rebuild
-the package. It is the authored source for public defaults; the JSON is bundled
-into the library, so loading an orb does not fetch a configuration file.
+Fork maintainers edit [`src/orbz.config.json`](./src/orbz.config.json) and rebuild.
+The JSON is bundled into the library; an orb never fetches a configuration file.
 
-| Section | Configuration |
+| JSON section | Settings |
 | --- | --- |
-| `component` | Element identity, supported states, attributes, size and motion defaults |
-| `appearance` | Presets, colors and per-state appearance |
-| `motion` | Full/reduced animation profiles, style properties and easing mappings |
-| `speech` | Web Speech, OpenAI text-to-speech and empty talk-flow defaults |
-| `realtime` | OpenAI Realtime model, voice, timeouts and event bounds |
+| `component` | Element identity, states, attributes, size, speed and reduced-motion mode |
+| `appearance` | Presets, palette colors and color attributes |
+| `realtime` | Realtime model, voice, transport timeouts and event bounds |
 
-Appearance, motion, element attributes, speech adapters, talk defaults and
-Realtime settings read this source. Legacy `.data.ts` exports remain derived
-compatibility views. The [migration inventory](./.audits/configuration.inventory.md)
-maps the original bindings to JSON paths; `orb audit` discovers the new
-configuration guard automatically. Mutable registries, algorithms, protocol
-identifiers and compile-time types retain their place in code.
+Implementation defaults live in typed uppercase constants:
 
-The exported `orbzConfiguration` is readonly. `transformOrbzConfiguration(input)`
-validates a complete configuration, clones it, derives runtime values and freezes
-the result. It rejects invalid fields and references with path-oriented errors,
-without printing values or performing I/O. It returns an isolated value and does
-not replace the package singleton or mutate the supplied object. Existing uppercase exports remain
-derived compatibility bindings; their data is maintained in JSON. Animation
-repeat uses the JSON string `"infinite"`, converted to runtime infinity only in
-the motion transition field.
+| Data module | Defaults |
+| --- | --- |
+| [`appearance.data.ts`](./src/core/appearance/appearance.data.ts) | `ORBZ_DEFAULT_APPEARANCE_BY_STATE`: contrast and saturation by state |
+| [`default-motion.data.ts`](./src/core/motion/default-motion.data.ts) | `ORBZ_DEFAULT_MOTION`: full/reduced profiles, animated properties and easings |
+| [`default-speech.data.ts`](./src/talk/default-speech.data.ts) | `ORBZ_DEFAULT_SPEECH`: browser/TTS options, token grammar and silent talk defaults |
+
+`transformOrbzConfiguration(input)` accepts the compact source, fills omitted
+internal groups, validates and clones the complete tree, then freezes the runtime
+result. Legacy complete inputs may still provide `appearance.byState`, `motion`
+and `speech`. Explicit invalid fields are rejected with safe schema paths.
+The transformer performs no I/O, does not mutate input and does not replace the
+readonly `orbzConfiguration` singleton. Existing exports remain compatibility
+views of the composed runtime. Motion repeat `'infinite'` becomes runtime Infinity.
+
+The TTS default is `gpt-4o-mini-tts` with `marin`; Realtime keeps `gpt-realtime-2`.
+Use the corresponding adapter/port for each. The
+[configuration inventory](./.audits/configuration.inventory.md) records ownership,
+and `orb audit` checks the allowed data-authoring boundaries.
 
 Provider/model identifiers are public configuration. Permanent provider API keys
 stay exclusively on the consuming application's server. Application authentication
@@ -263,13 +264,14 @@ For example, `orb.voiceModel = { provider: 'web-speech', language: 'pt-BR' }`
 selects browser speech. OpenAI text-to-speech uses
 `{ provider: 'openai-speech', endpoint: '/api/voice/speech' }`; that endpoint
 returns audio. Realtime models use the Realtime provider, not the speech endpoint.
-Omitted model and voice options read the corresponding JSON defaults.
+Omitted model and voice options read the corresponding composed defaults.
 
-A fork can set `speech.defaultVoiceModel` to `web-speech` or `openai-realtime`
+A fork can set `ORBZ_DEFAULT_SPEECH.defaultVoiceModel` in
+`src/talk/default-speech.data.ts` to `web-speech` or `openai-realtime` and rebuild
 to configure new elements silently. `null` leaves the selection unset. An
 `openai-speech` default waits for an explicit `voiceModel` assignment containing
 an application endpoint. Assigning `null` or `undefined` explicitly clears a
-selection without restoring the JSON default.
+selection without restoring the package default.
 
 An explicitly assigned `voiceEngine` takes precedence. Set
 `orb.voiceEngine = undefined` to use `voiceModel` again. Starting a conversation

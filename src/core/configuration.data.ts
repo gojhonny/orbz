@@ -4,4 +4,6 @@ import { transformOrbzConfiguration } from '@core/lib/transform-configuration.co
 import type { OrbzBundledConfiguration } from './config.types'
 
 // The JSON is bundled into every entry point; importing never performs I/O.
-export const orbzConfiguration = transformOrbzConfiguration(bundledSource) as OrbzBundledConfiguration
+export const orbzConfiguration = transformOrbzConfiguration(
+  bundledSource
+) as OrbzBundledConfiguration
