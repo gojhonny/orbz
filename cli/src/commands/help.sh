@@ -66,7 +66,7 @@ if ! orb_is_repository_source; then
 Orbz project installer
 
 Usage:
-  npx -y --package=@neongate-ai/orbz@latest orb
+  npx -y --package=@gojhonny/orbz@latest orb
   orb setup [options]
 
 Options:
@@ -79,7 +79,7 @@ Options:
   --help, -h                            Show this guide
   --version, -V                         Print the executing Orbz version
 
-The default command is setup. It adds @neongate-ai/orbz to an existing project
+The default command is setup. It adds @gojhonny/orbz to an existing project
 and prints the framework-neutral registration snippet. It does not generate or
 overwrite application source files.
 EOF_PUBLIC
@@ -102,7 +102,7 @@ Commands:
   setup [--launcher] [--bin-dir <dir>]  Install the user-scoped orb launcher
   setup --project <dir> [options]       Install Orbz into an existing consumer project
   doctor [--ci]                         Diagnose the Orbz engineering environment
-  cleanup [--dependencies]              Remove generated output
+  cleanup [options]                     Remove generated state and dependencies
   lint [--write|--staged]               Run Biome or staged-file checks
   typecheck                             Type-check source and colocated tests
   test [--watch|--coverage] [args]      Run Vitest
@@ -143,7 +143,7 @@ Install only the user-scoped launcher:
   pnpm run setup
 
 Consumer installation test:
-  npx -y --package=@neongate-ai/orbz@latest orb
+  npx -y --package=@gojhonny/orbz@latest orb
 
 Orb is implemented entirely with POSIX shell scripts. Package commands are
 owned by Orb; package.json keeps only the setup bridge and npm lifecycle gates.

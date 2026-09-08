@@ -18,7 +18,14 @@ explicit SPEC plus an ADR when the commitment is architectural.
 
 `package.json#scripts` does not mirror the Orb command surface. It retains only
 the `setup` bridge and npm lifecycle gates. Consumer setup is explicit through
-`npx @neongate-ai/orbz` and never runs from an install lifecycle. Harness-score remains explicit engineering-only tooling and is never part of the runtime API.
+`npx -y --package=@gojhonny/orbz@latest orb` and never runs from an install
+lifecycle. Harness-score remains explicit engineering-only tooling and is never
+part of the runtime API.
+
+ADR-0017/SPEC-026 migrate package imports and the default preset to `gojhonny`
+without changing version 1.0.0. Existing consumers must migrate their dependency,
+imports and explicit preset name. A repository rename does not publish or
+transfer an npm package; configure the new scope before its authorized release.
 
 
 Agent runtime guardrails deny autonomous package publication and require human approval for tag, push, merge/rebase, and PR-merge boundaries. These hooks supplement, but do not replace, Orb checks, Git hooks, and CI.

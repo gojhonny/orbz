@@ -1,6 +1,6 @@
 # Orbz engineering instructions
 
-This repository owns only the `@neongate-ai/orbz` npm package.
+This repository owns only the `@gojhonny/orbz` npm package.
 
 ## Required reading order
 

@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Created: 2026-09-04
-- Updated: 2026-09-04
+- Updated: 2026-09-08
 - Mode: Current decision
 
 ## Context
@@ -37,11 +37,15 @@ manager (`pnpm exec orb`, `npm exec -- orb`, or an equivalent local-bin runner).
 
 ## Consequences
 
-`npx -y --package=@neongate-ai/orbz@latest orb` is the canonical consumer
+`npx -y --package=@gojhonny/orbz@latest orb` is the canonical consumer
 invocation: it explicitly selects the published `orb` binary, fetches the
 temporary installer, and adds Orbz to the current project. The published payload intentionally includes shell
 CLI files in addition to runtime distribution files. POSIX shell is required for
 the CLI, while the Web Component package remains framework-agnostic.
+
+ADR-0017 amends the package identity to `@gojhonny/orbz` without changing this
+explicit installer architecture. Publishing the new scope remains a separate
+authorized release step.
 
 ## Evidence
 
@@ -54,6 +58,6 @@ the CLI, while the Web Component package remains framework-agnostic.
 
 ## Related records
 
-- ADR-0005, ADR-0007, and ADR-0010
-- SPEC-014
+- ADR-0005, ADR-0007, ADR-0010, and ADR-0017
+- SPEC-014 and SPEC-026
 - Rules 001, 008, and 011

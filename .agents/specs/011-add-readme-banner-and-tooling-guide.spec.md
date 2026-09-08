@@ -20,7 +20,7 @@ language, state, preset, palette, accessibility, or getting-started guidance.
 ## Acceptance criteria
 
 - [x] `assets/images/readme-banner.png` appears after the opening summary and before navigation links.
-- [x] The title retains the NeonGate sphere beside `# Orbz`.
+- [x] The title retains the gojhonny sphere beside `# Orbz`.
 - [x] Development documents bootstrap, setup, doctor, cleanup, and audit.
 - [x] Git documentation distinguishes pre-commit from commit-msg behavior.
 - [x] Conventional Commits, SemVer signals, and version-check commands are documented.
