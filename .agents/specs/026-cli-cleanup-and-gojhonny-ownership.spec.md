@@ -6,6 +6,11 @@
 - Mode: Prospective
 - Owner: Jonatas Sales
 
+Amendment on 2026-09-08: SPEC-027 and ADR-0018 supersede only this record's npm
+identity migration. The published package remains `@neongate-ai/orbz`. The
+original requirements and validation below describe SPEC-026 as delivered;
+its cleanup and GitHub/preset changes remain intact.
+
 ## Problem
 
 `orb cleanup` leaves dependencies installed unless `--dependencies` is passed,

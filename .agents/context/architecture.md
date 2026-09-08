@@ -2,11 +2,11 @@
 
 ## Entry points
 
-- `@gojhonny/orbz` is side-effect free and safe to import during SSR.
-- `@gojhonny/orbz/browser` registers `<orb-z>` in the active custom-element registry.
-- `@gojhonny/orbz/react-types` provides type-only JSX augmentation.
-- `@gojhonny/orbz/standalone` is the direct-browser bundle.
-- `@gojhonny/orbz/index.css` exposes package CSS when explicitly needed.
+- `@neongate-ai/orbz` is side-effect free and safe to import during SSR.
+- `@neongate-ai/orbz/browser` registers `<orb-z>` in the active custom-element registry.
+- `@neongate-ai/orbz/react-types` provides type-only JSX augmentation.
+- `@neongate-ai/orbz/standalone` is the direct-browser bundle.
+- `@neongate-ai/orbz/index.css` exposes package CSS when explicitly needed.
 
 ## Runtime layers
 

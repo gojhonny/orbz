@@ -38,11 +38,11 @@ while [ "$#" -gt 0 ]; do
       [ "$#" -eq 1 ] || orb_die 'Project setup help does not accept additional arguments.' 2
       cat <<'HELP'
 Usage:
-  npx -y --package=@gojhonny/orbz@latest orb
+  npx -y --package=@neongate-ai/orbz@latest orb
   orb setup [--project <directory>] [--package-manager <manager>]
             [--package-spec <specifier>] [--force] [--dry-run]
 
-Project setup installs @gojhonny/orbz into an existing JavaScript project.
+Project setup installs @neongate-ai/orbz into an existing JavaScript project.
 The package manager is selected from package.json#packageManager, lockfiles, or
 npm as a fallback. No application source file is generated or overwritten.
 HELP
@@ -75,18 +75,18 @@ try {
 NODE
 ) || orb_die "Invalid package.json in $orb_target_dir." 2
 
-[ "$orb_target_name" != '@gojhonny/orbz' ] ||
+[ "$orb_target_name" != '@neongate-ai/orbz' ] ||
   orb_die 'Project setup cannot install Orbz into the Orbz package itself.' 2
 
 if [ -z "$orb_package_spec" ]; then
   orb_package_version=$(orb_project_version 2>/dev/null || true)
   [ -n "$orb_package_version" ] || orb_die 'Unable to resolve the executing Orbz version.'
-  orb_package_spec="@gojhonny/orbz@$orb_package_version"
+  orb_package_spec="@neongate-ai/orbz@$orb_package_version"
 fi
 
 case "$orb_package_spec" in
-  @gojhonny/orbz|@gojhonny/orbz@*) ;;
-  *) orb_die "Package specifier must target @gojhonny/orbz: $orb_package_spec" 2 ;;
+  @neongate-ai/orbz|@neongate-ai/orbz@*) ;;
+  *) orb_die "Package specifier must target @neongate-ai/orbz: $orb_package_spec" 2 ;;
 esac
 
 if [ -z "$orb_package_manager" ]; then
@@ -133,13 +133,13 @@ orb_existing_dependency=$(node - "$orb_target_dir/package.json" <<'NODE'
 const fs = require('node:fs')
 const file = process.argv[2]
 const manifest = JSON.parse(fs.readFileSync(file, 'utf8'))
-const value = manifest.dependencies?.['@gojhonny/orbz']
+const value = manifest.dependencies?.['@neongate-ai/orbz']
 if (typeof value === 'string') process.stdout.write(value)
 NODE
 ) || orb_die "Invalid package.json in $orb_target_dir." 2
 
 if [ -n "$orb_existing_dependency" ] && [ "$orb_force" = false ]; then
-  orb_print_success "@gojhonny/orbz is already a project dependency ($orb_existing_dependency)"
+  orb_print_success "@neongate-ai/orbz is already a project dependency ($orb_existing_dependency)"
 else
   if [ "$orb_dry_run" = false ]; then
     orb_need "$orb_package_manager"
@@ -169,19 +169,19 @@ orb_recorded_dependency=$(node - "$orb_target_dir/package.json" <<'NODE'
 const fs = require('node:fs')
 const file = process.argv[2]
 const manifest = JSON.parse(fs.readFileSync(file, 'utf8'))
-const value = manifest.dependencies?.['@gojhonny/orbz']
+const value = manifest.dependencies?.['@neongate-ai/orbz']
 if (typeof value === 'string') process.stdout.write(value)
 NODE
 ) || orb_die "Invalid package.json after $orb_package_manager setup." 2
 [ -n "$orb_recorded_dependency" ] ||
-  orb_die "$orb_package_manager completed without adding @gojhonny/orbz to dependencies."
+  orb_die "$orb_package_manager completed without adding @neongate-ai/orbz to dependencies."
 
 orb_print_success "Orbz project setup completed ($orb_recorded_dependency)"
 cat <<'NEXT'
 
 Next step:
 
-  import '@gojhonny/orbz/browser'
+  import '@neongate-ai/orbz/browser'
 
   <orb-z preset="gojhonny" state="idle"></orb-z>
 

@@ -1,11 +1,11 @@
 # Orb CLI for Orbz
 
-Orb is the POSIX shell command surface for `@gojhonny/orbz`. It has two
+Orb is the POSIX shell command surface for `@neongate-ai/orbz`. It has two
 execution contexts:
 
 1. **Repository mode** operates on an Orbz source checkout.
 2. **Project setup mode** is the published npm binary used by
-   `npx --package=@gojhonny/orbz orb`.
+   `npx --package=@neongate-ai/orbz orb`.
 
 There is no Node, MJS, TypeScript, or framework-based command runner. Small
 inline Node programs are used only where reliable JSON parsing is required.
@@ -15,7 +15,7 @@ inline Node programs are used only where reliable JSON parsing is required.
 ```bash
 ./cli/orb help                    # source checkout
 orb help                          # optional user-scoped launcher
-npx -y --package=@gojhonny/orbz@latest orb  # consumer project setup
+npx -y --package=@neongate-ai/orbz@latest orb  # consumer project setup
 ```
 
 `cli/orb` resolves npm/pnpm symlinks before delegating to `cli/src/orb.sh`.
@@ -40,7 +40,7 @@ own exit status. ANSI output is disabled by `NO_COLOR` or noninteractive stdout.
 Once Orbz is a project dependency, use the package manager's local executable
 runner, for example `pnpm exec orb --help` or `npm exec -- orb --help`.
 To intentionally install a global launcher from npm, use
-`npm install --global @gojhonny/orbz@latest`; this is separate from the npx
+`npm install --global @neongate-ai/orbz@latest`; this is separate from the npx
 project-setup flow.
 
 ## Repository commands
@@ -128,7 +128,7 @@ Use the explicit package-and-binary form so execution never depends on npm
 inferring the binary name:
 
 ```bash
-npx -y --package=@gojhonny/orbz@latest orb
+npx -y --package=@neongate-ai/orbz@latest orb
 ```
 
 With no arguments, the published binary runs project setup. It requires an
@@ -139,9 +139,9 @@ not create or overwrite application source files.
 Useful variants:
 
 ```bash
-npx -y --package=@gojhonny/orbz@latest orb --package-manager pnpm
-npx -y --package=@gojhonny/orbz@latest orb --project ./apps/web
-npx -y --package=@gojhonny/orbz@latest orb --dry-run
+npx -y --package=@neongate-ai/orbz@latest orb --package-manager pnpm
+npx -y --package=@neongate-ai/orbz@latest orb --project ./apps/web
+npx -y --package=@neongate-ai/orbz@latest orb --dry-run
 ```
 
 ## Package scripts

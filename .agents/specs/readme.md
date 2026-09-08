@@ -62,3 +62,11 @@ status only when the corresponding evidence is available.
   default and nested dependency cleanup, protect tracked/generated boundaries,
   migrate package identity to `gojhonny`, and refresh docs and deterministic audits.
   Delivery is one PR against `staging`; no merge, version bump, tag or publication.
+  SPEC-027 supersedes its npm identity migration only.
+
+## Published npm identity
+
+- [SPEC-027](027-preserve-published-npm-package.spec.md): implemented; keep the
+  published `@neongate-ai/orbz` package while retaining GitHub owner `gojhonny`.
+  Update installer, release automation, documentation and ownership audits.
+  Delivery is one PR against `staging`; no version bump or publication.
