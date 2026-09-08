@@ -23,7 +23,7 @@ export const ORBZ_VOICE_DEFAULTS = deepFreezeOrbzConfiguration({
   openaiRealtime: orbzConfiguration.realtime.openai
 })
 
-/** Compatibility bindings; authored values live in src/orbz.config.json. */
+/** Compatibility bindings derived from compact JSON and internal data defaults. */
 export const config = deepFreezeOrbzConfiguration({
   DEFAULT_ORBZ_COLORS,
   DEFAULT_ORBZ_PRESET,

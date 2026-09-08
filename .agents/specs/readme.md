@@ -50,3 +50,8 @@ status only when the corresponding evidence is available.
   authorized main promotion, v1.0.0 tagging and npm publication on 2026-09-06.
   This supersedes PR #12's earlier minor-release plan. Publication is complete
   only after registry verification; release preparation alone is insufficient.
+
+## Compact configuration
+
+- [SPEC-025](025-compact-configuration.spec.md): implemented; owner-requested ZIP
+  delivery on a separate local branch, with no remote writes.

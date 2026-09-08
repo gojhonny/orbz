@@ -1,8 +1,19 @@
-import type { OrbzAnimationValues, OrbzMotionProfile, OrbzTransition } from '@core/motion/motion.types'
+import type {
+  OrbzAnimationValues,
+  OrbzMotionProfile,
+  OrbzTransition
+} from '@core/motion/motion.types'
 
 export type OrbzStates = readonly ['idle', 'listening', 'thinking', 'speaking', 'asleep']
 export type OrbzReducedMotionModes = readonly ['system', 'always', 'never']
-export type OrbzPresetNames = readonly ['neongate', 'periwinkle', 'magenta', 'peach', 'mocha', 'ivory']
+export type OrbzPresetNames = readonly [
+  'neongate',
+  'periwinkle',
+  'magenta',
+  'peach',
+  'mocha',
+  'ivory'
+]
 export type OrbzColorKeys = readonly ['accent', 'background', 'highlight', 'primary', 'secondary']
 
 type State = OrbzStates[number]
@@ -86,13 +97,23 @@ export interface OrbzRealtimeConfiguration {
   }
 }
 
-/** Serializable, public build input. Credentials here mean fetch policy, never secrets. */
+/** Compact build input; legacy internal overrides remain supported. */
 export interface OrbzConfigurationSource {
   component: OrbzComponentConfiguration
+  appearance: Omit<OrbzAppearanceConfiguration, 'byState'> & {
+    byState?: OrbzAppearanceConfiguration['byState']
+  }
+  motion?: OrbzMotionConfigurationSource
+  speech?: OrbzSpeechConfiguration
+  realtime: OrbzRealtimeConfiguration
+}
+
+/** Validated source after composing omitted internal defaults. */
+export interface OrbzResolvedConfigurationSource
+  extends Omit<OrbzConfigurationSource, 'appearance' | 'motion' | 'speech'> {
   appearance: OrbzAppearanceConfiguration
   motion: OrbzMotionConfigurationSource
   speech: OrbzSpeechConfiguration
-  realtime: OrbzRealtimeConfiguration
 }
 
 export interface OrbzMotionConfiguration
@@ -101,7 +122,7 @@ export interface OrbzMotionConfiguration
   reduced: Record<State, OrbzMotionProfile>
 }
 
-export interface OrbzRuntimeConfiguration extends Omit<OrbzConfigurationSource, 'motion'> {
+export interface OrbzRuntimeConfiguration extends Omit<OrbzResolvedConfigurationSource, 'motion'> {
   motion: OrbzMotionConfiguration
 }
 

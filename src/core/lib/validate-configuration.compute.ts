@@ -1,11 +1,18 @@
-import type { OrbzConfigurationSource } from '@core/config.types'
+import { ORBZ_DEFAULT_APPEARANCE_BY_STATE } from '@core/appearance/appearance.data'
+import type { OrbzResolvedConfigurationSource } from '@core/config.types'
+import { ORBZ_DEFAULT_MOTION } from '@core/motion/default-motion.data'
+import { ORBZ_DEFAULT_SPEECH } from '@talk/default-speech.data'
 
 import { cloneOrbzConfigurationInput } from './clone-configuration.compute'
 
 /** Validate a cloned input; diagnostics contain schema paths without supplied values. */
-export function readOrbzConfigurationSource(input: unknown): OrbzConfigurationSource {
+export function readOrbzConfigurationSource(input: unknown): OrbzResolvedConfigurationSource {
   const source = cloneOrbzConfigurationInput(input)
-  const root = record(source, '$', ['component', 'appearance', 'motion', 'speech', 'realtime'])
+  const root = record(source, '$', ['component', 'appearance', 'realtime'], ['motion', 'speech'])
+  // Only absent legacy groups receive defaults. Explicit null/invalid input
+  // still reaches validation, and every returned tree owns its nested data.
+  if (!Object.hasOwn(root, 'motion')) root.motion = cloneOrbzConfigurationInput(ORBZ_DEFAULT_MOTION)
+  if (!Object.hasOwn(root, 'speech')) root.speech = cloneOrbzConfigurationInput(ORBZ_DEFAULT_SPEECH)
   const component = record(root.component, '$.component', [
     'tagName',
     'states',
@@ -52,14 +59,15 @@ export function readOrbzConfigurationSource(input: unknown): OrbzConfigurationSo
     'reduced-motion'
   ])
 
-  const appearance = record(root.appearance, '$.appearance', [
-    'defaultPreset',
-    'presetNames',
-    'colorKeys',
-    'colorAttributes',
-    'presets',
-    'byState'
-  ])
+  const appearance = record(
+    root.appearance,
+    '$.appearance',
+    ['defaultPreset', 'presetNames', 'colorKeys', 'colorAttributes', 'presets'],
+    ['byState']
+  )
+  if (!Object.hasOwn(appearance, 'byState')) {
+    appearance.byState = cloneOrbzConfigurationInput(ORBZ_DEFAULT_APPEARANCE_BY_STATE)
+  }
   const presets = tuple(appearance.presetNames, '$.appearance.presetNames', [
     'neongate',
     'periwinkle',
@@ -120,7 +128,7 @@ export function readOrbzConfigurationSource(input: unknown): OrbzConfigurationSo
   motionProfiles(motion.reduced, '$.motion.reduced', states, true)
   speechConfiguration(root.speech)
   realtimeConfiguration(root.realtime)
-  return source as OrbzConfigurationSource
+  return source as OrbzResolvedConfigurationSource
 }
 
 function motionProfiles(
