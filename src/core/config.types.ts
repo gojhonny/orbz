@@ -7,7 +7,7 @@ import type {
 export type OrbzStates = readonly ['idle', 'listening', 'thinking', 'speaking', 'asleep']
 export type OrbzReducedMotionModes = readonly ['system', 'always', 'never']
 export type OrbzPresetNames = readonly [
-  'neongate',
+  'gojhonny',
   'periwinkle',
   'magenta',
   'peach',

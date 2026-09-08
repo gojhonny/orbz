@@ -69,7 +69,7 @@ export function readOrbzConfigurationSource(input: unknown): OrbzResolvedConfigu
     appearance.byState = cloneOrbzConfigurationInput(ORBZ_DEFAULT_APPEARANCE_BY_STATE)
   }
   const presets = tuple(appearance.presetNames, '$.appearance.presetNames', [
-    'neongate',
+    'gojhonny',
     'periwinkle',
     'magenta',
     'peach',

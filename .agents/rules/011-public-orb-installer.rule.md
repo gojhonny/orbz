@@ -12,7 +12,7 @@ globs:
 - Applies: `package.json`, `cli/**`, release documentation, and npm payload
 
 1. The package exposes exactly one binary named `orb`, implemented with POSIX shell.
-2. The canonical npx form is `npx --package=@neongate-ai/orbz@latest orb`; it performs consumer project setup, not repository engineering operations, and does not depend on binary-name inference.
+2. The canonical npx form is `npx --package=@gojhonny/orbz@latest orb`; it performs consumer project setup, not repository engineering operations, and does not depend on binary-name inference.
 3. Consumer setup requires an existing `package.json`, installs Orbz into `dependencies`, and never overwrites application source files.
 4. Detect npm, pnpm, yarn, or bun from explicit input, `packageManager`, lockfiles, then npm as the fallback.
 5. Install the same Orbz version that supplied the running CLI unless an explicit package specifier is provided.

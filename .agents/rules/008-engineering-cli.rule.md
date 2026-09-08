@@ -9,6 +9,7 @@ globs:
 # Rule 008: Engineering CLI
 
 - Effective: 2026-09-04
+- Updated: 2026-09-08
 - Priority: High
 - Applies: `cli/**` and CLI package integration
 
@@ -20,7 +21,7 @@ globs:
 6. `bootstrap` may install declared development dependencies. Explicit consumer project setup may install the Orbz runtime dependency. The explicit `harness` command may invoke its external harness utility. No other command performs network installation.
 7. Repository launcher setup must not edit shell profiles or replace unmanaged paths.
 8. Consumer setup must not generate or overwrite application source files.
-9. `cleanup` removes generated state only and protects `.git/`, `.agents/`, `.audits/`, source, and assets.
+9. `cleanup` removes untracked generated state and root/nested dependencies by default. `--keep-dependencies` preserves dependencies; `--dependencies` remains a compatibility option; `--dry-run` previews without deletion. Protect tracked paths, `.git/`, `.agents/`, `.audits/`, source, assets and nested repositories, including when they sit inside a generated-looking target. Dependency-owned source/assets inside `node_modules` are generated state. Never follow directory symlinks or delete their destinations. Validate all options before mutation and propagate filesystem/Git errors (SPEC-026).
 10. `doctor` exits nonzero when required repository conditions fail and supports CI mode.
 11. Repository-only commands reject execution from the published package.
 12. Remove commands, terminology, and infrastructure assumptions that do not belong to the Orbz library.

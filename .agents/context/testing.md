@@ -24,3 +24,9 @@ Required confidence layers are:
 5. package builds for module and standalone entries;
 6. SemVer validation and versioned shell audits;
 7. `npm pack --dry-run` in CI for payload inspection.
+
+CLI regressions use dependency-free POSIX shell audits with disposable checkout
+fixtures. Cleanup checks exercise actual filesystem outcomes, tracked/protected
+paths, symlinks, preview/option semantics and failures without cleaning the working
+checkout. Ownership checks exercise the installer with a local package-manager
+fixture; no registry installation is needed for these deterministic checks.

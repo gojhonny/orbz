@@ -23,12 +23,11 @@ Statuses are `Proposed`, `In progress`, `Implemented`, `Superseded`, and
 | [SPEC-021](021-application-owned-credentials.spec.md) | Implemented; automated validation passed | Application credential ownership and strict session options |
 | [SPEC-022](022-align-readme-with-configuration-and-voice.spec.md) | Implemented; documentation review passed | README alignment for configuration, voice and credential ownership |
 
-The owner requested one specification and implementation per PR. On 2026-09-05,
-the owner additionally authorized validation, conflict repair and merging eligible
-PRs into staging. This supersedes the earlier instruction to leave every PR open
-and defer validation; the earlier evidence records remain historical. If a
-validation cannot be resolved in roughly ten minutes, park that PR and continue
-with another eligible PR. Do not merge a PR with unresolved required validation.
+The owner requested one specification and implementation per PR. The 2026-09-05
+batch authorized validation, conflict repair and eligible staging merges for
+SPEC-016 through SPEC-022. That authorization and its earlier validation deferral
+are historical delivery context, not blanket permission for later work. Follow
+the current task's delivery boundary; do not merge with unresolved validation.
 
 Dependency order: SPEC-016 → SPEC-017 → SPEC-019 → SPEC-018 → SPEC-020 → SPEC-021
 → SPEC-022. Each PR starts from its predecessor. Integration may retarget a PR
@@ -53,5 +52,13 @@ status only when the corresponding evidence is available.
 
 ## Compact configuration
 
-- [SPEC-025](025-compact-configuration.spec.md): implemented; owner-requested ZIP
-  delivery on a separate local branch, with no remote writes.
+- [SPEC-025](025-compact-configuration.spec.md): implemented; initially delivered
+  as an owner-requested ZIP. Subsequently integrated into remote `staging` through
+  PR #14, as verified on 2026-09-08. The original SPEC records the initial delivery.
+
+## CLI cleanup and ownership
+
+- [SPEC-026](026-cli-cleanup-and-gojhonny-ownership.spec.md): implemented; repair
+  default and nested dependency cleanup, protect tracked/generated boundaries,
+  migrate package identity to `gojhonny`, and refresh docs and deterministic audits.
+  Delivery is one PR against `staging`; no merge, version bump, tag or publication.
