@@ -34,6 +34,11 @@ internal groups, validates, clones, derives runtime values and freezes them.
 Legacy complete input remains accepted. Existing exports derive from the composed
 runtime. Credentials, callbacks and mutable browser objects stay outside data.
 
+NeonGate (`neongate`) is the canonical default palette, independent of GitHub
+ownership. ADR-0019 preserves the accidental 1.0.1 name as a deprecated input
+and non-enumerable runtime palette alias. The transformer normalizes legacy
+source on its own clone; canonical enumeration still exposes six presets.
+
 A native `voiceModel` property selects inert adapters through a service.
 `OrbzVoiceEnginePort` handles output-only speech; `OrbzConversationPort` handles
 live audio lifecycle and bounded state/transcript events. Realtime SDP setup

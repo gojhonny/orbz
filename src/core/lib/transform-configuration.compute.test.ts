@@ -1,5 +1,6 @@
 import configuration from '@configuration'
 import { ORBZ_DEFAULT_APPEARANCE_BY_STATE } from '@core/appearance/appearance.data'
+import type { OrbzConfigurationSource } from '@core/config.types'
 import { ORBZ_DEFAULT_MOTION } from '@core/motion/default-motion.data'
 import { ORBZ_DEFAULT_SPEECH } from '@talk/default-speech.data'
 import { describe, expect, it, vi } from 'vitest'
@@ -93,6 +94,45 @@ describe('core/transform-configuration', () => {
 
     expect(() => transformOrbzConfiguration(input)).toThrow(
       'Invalid Orbz configuration at $.appearance.defaultPreset: unsupported value or reference.'
+    )
+  })
+
+  it('normalizes legacy preset configuration without changing colors or the caller input', () => {
+    const source = legacySource()
+    const { neongate, ...presets } = source.appearance.presets
+    const input = {
+      ...source,
+      appearance: {
+        ...source.appearance,
+        defaultPreset: 'gojhonny',
+        presetNames: ['gojhonny', 'periwinkle', 'magenta', 'peach', 'mocha', 'ivory'],
+        presets: { gojhonny: { ...neongate, primary: '#123456' }, ...presets }
+      }
+    } satisfies OrbzConfigurationSource
+    const before = structuredClone(input)
+    const result = transformOrbzConfiguration(input)
+
+    expect(result.appearance.defaultPreset).toBe('neongate')
+    expect(result.appearance.presetNames[0]).toBe('neongate')
+    expect(result.appearance.presets.neongate.primary).toBe('#123456')
+    expect(result.appearance.presets.gojhonny).toBe(result.appearance.presets.neongate)
+    expect(Object.keys(result.appearance.presets)).toEqual(result.appearance.presetNames)
+    expect(input).toEqual(before)
+    expect(Object.isFrozen(input.appearance.presets.gojhonny)).toBe(false)
+    expect(Object.isFrozen(result.appearance.presets.gojhonny)).toBe(true)
+
+    // Both compact source and the older complete configuration remain supported.
+    const { motion: _motion, speech: _speech, ...compact } = input
+    expect(transformOrbzConfiguration(compact).appearance).toEqual(result.appearance)
+    const alternate = { ...input, appearance: { ...input.appearance, defaultPreset: 'peach' } }
+    expect(transformOrbzConfiguration(alternate).appearance.defaultPreset).toBe('peach')
+  })
+
+  it('rejects ambiguous duplicate palette declarations instead of silently choosing colors', () => {
+    const input = structuredClone(configuration)
+    Object.assign(input.appearance.presets, { gojhonny: input.appearance.presets.neongate })
+    expect(() => transformOrbzConfiguration(input)).toThrow(
+      'Invalid Orbz configuration at $.appearance.presets: unknown configuration field.'
     )
   })
 

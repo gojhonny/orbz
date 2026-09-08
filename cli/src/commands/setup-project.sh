@@ -183,7 +183,7 @@ Next step:
 
   import '@neongate-ai/orbz/browser'
 
-  <orb-z preset="gojhonny" state="idle"></orb-z>
+  <orb-z preset="neongate" state="idle"></orb-z>
 
 Speech remains opt-in. Assign speech and a voiceEngine, then call startTalking().
 NEXT

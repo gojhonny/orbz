@@ -137,7 +137,7 @@ fi
 # ---------------------------------------------------------------------------
 
 for value in \
-  gojhonny \
+  neongate \
   periwinkle \
   magenta \
   peach \

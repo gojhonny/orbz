@@ -19,8 +19,8 @@
     ]
   },
   "appearance": {
-    "defaultPreset": "gojhonny",
-    "presetNames": ["gojhonny", "periwinkle", "magenta", "peach", "mocha", "ivory"],
+    "defaultPreset": "neongate",
+    "presetNames": ["neongate", "periwinkle", "magenta", "peach", "mocha", "ivory"],
     "colorKeys": ["accent", "background", "highlight", "primary", "secondary"],
     "colorAttributes": {
       "accent": "color-accent",
@@ -30,7 +30,7 @@
       "secondary": "color-secondary"
     },
     "presets": {
-      "gojhonny": {
+      "neongate": {
         "accent": "#FF4DDE",
         "background": "#14142B",
         "highlight": "#FFB07A",

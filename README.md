@@ -42,11 +42,11 @@ require a separate release before they reach npm consumers.
 
 Keep `@neongate-ai/orbz` in dependencies, imports and package-manager commands.
 The GitHub move to `gojhonny/orbz` does not require replacing the npm package.
-The current source names its default preset `gojhonny`; consumers explicitly
-using the previous preset name must update that setting when adopting this
-source release. The five palette colors, `orb` binary and `<orb-z>` element are
-unchanged. npm publisher authorization must target the existing package and
-the current GitHub repository.
+The default preset is **NeonGate**, with canonical identifier `neongate`.
+The accidental `gojhonny` identifier from 1.0.1 remains a deprecated input alias;
+this source normalizes it to `neongate` without changing the five palette colors.
+The `orb` binary and `<orb-z>` element are unchanged. npm publisher authorization
+must target the existing package and the current GitHub repository.
 
 ### Install with npx
 
@@ -95,7 +95,7 @@ if (orb && speakButton) {
 <orb-z
   aria-label="Assistente de voz"
   role="img"
-  preset="gojhonny"
+  preset="neongate"
   state="idle"
 ></orb-z>
 <button id="speak" type="button">Ouvir mensagem</button>
@@ -448,7 +448,7 @@ Set `preset` to use one of the last five-color of the year palettes.
 
 | Preset | Primary | Secondary | Accent | Highlight | Background |
 | --- | --- | --- | --- | --- | --- |
-| `gojhonny` | `#6C5CFF` | `#00E9FF` | `#FF4DDE` | `#FFB07A` | `#14142B` |
+| `neongate` | `#6C5CFF` | `#00E9FF` | `#FF4DDE` | `#FFB07A` | `#14142B` |
 | `periwinkle` | `#6667AB` | `#8FB8FF` | `#E66FA9` | `#F3ECFF` | `#111226` |
 | `magenta` | `#BB2649` | `#F06A82` | `#29B8A6` | `#FFDCE4` | `#250A12` |
 | `peach` | `#FFBE98` | `#FF8F70` | `#D987A3` | `#FFF0E7` | `#2A1516` |
@@ -459,7 +459,7 @@ Set `preset` to use one of the last five-color of the year palettes.
 <orb-z preset="peach" state="listening"></orb-z>
 ```
 
-The default palette is `gojhonny`. Omitting `preset` also allows individual
+The default palette is **NeonGate** (`neongate`). Omitting `preset` also allows individual
 color overrides to merge with that default palette.
 
 ### Custom palette
@@ -714,9 +714,13 @@ merge into `staging`; SPEC-024 records the separate first-major release plan.
 Those historical authorizations do not apply to later work.
 
 SPEC-026 covers the cleanup repair and GitHub ownership migration. SPEC-027
-clarifies that the npm package remains `@neongate-ai/orbz`, with version **1.0.0**
-unchanged by either change. Publication requires a separately authorized version
-that is not already on npm. The release workflow validates and packs source,
+clarifies that the npm package remains `@neongate-ai/orbz`. SPEC-028 restores the
+NeonGate preset and retains a deprecated alias for the accidental 1.0.1 name.
+Its PR carries forward main's **1.0.1** metadata without publishing a new version.
+The preset correction reaches npm only through a separately authorized version
+that is not already on npm. Until then, registry consumers can use
+`DEFAULT_ORBZ_PRESET` or omit `preset` to select NeonGate without hard-coding the
+accidental identifier. The release workflow validates and packs source,
 tags the exact commit, publishes that tarball, verifies npm integrity and creates
 the GitHub release. A repository change or tag alone does not confirm publication.
 
