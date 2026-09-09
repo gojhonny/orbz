@@ -78,3 +78,12 @@ status only when the corresponding evidence is available.
   branding and canonical `neongate` configuration, retaining deprecated 1.0.1
   compatibility without adding another enumerated palette. Base on current main
   to preserve its 1.0.1 release metadata in the PR against `staging`.
+
+## Consumer README and direct Orb CLI
+
+- [SPEC-029](029-consumer-readme-and-direct-orb-cli.spec.md): in progress; keep
+  the root README as detailed Web Component consumer documentation, repair the
+  stale documentation audit, and make `orb <command>` the canonical source-
+  checkout CLI through a managed launcher provisioned by local pnpm setup.
+  Preserve explicit npx consumer setup and do not add standard package dependency
+  install lifecycles.

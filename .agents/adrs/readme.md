@@ -28,3 +28,8 @@ identity change: keep `@neongate-ai/orbz` while GitHub remains `gojhonny/orbz`.
 [ADR-0019](0019-neongate-preset-identity.adr.md) supersedes the preset identity
 decision in ADR-0017/0018: NeonGate remains `neongate`, with a deprecated alias
 for the accidental identifier published in 1.0.1.
+
+[ADR-0020](0020-direct-orb-source-launcher.adr.md) makes the managed source-checkout
+launcher part of local pnpm setup so repository engineering uses `orb <command>`
+directly, while keeping application dependency installation and explicit npx
+consumer setup separate.

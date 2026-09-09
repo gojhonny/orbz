@@ -95,10 +95,14 @@ node <<'NODE' || failures=$((failures + 1))
 const fs = require('node:fs')
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 const scripts = pkg.scripts ?? {}
-const expected = ['prepack', 'setup']
+const expected = ['pnpm:devPreinstall', 'prepack', 'setup']
 const actual = Object.keys(scripts).sort()
 if (JSON.stringify(actual) !== JSON.stringify(expected)) {
   console.error(`FAIL  package scripts must be exactly ${expected.join(', ')}; found ${actual.join(', ')}`)
+  process.exit(1)
+}
+if (scripts['pnpm:devPreinstall'] !== './cli/orb setup --launcher --bootstrap') {
+  console.error('FAIL  pnpm:devPreinstall must provision the managed Orb launcher')
   process.exit(1)
 }
 if (scripts.setup !== './cli/orb setup --launcher') {
@@ -109,17 +113,29 @@ if (scripts.prepack !== './cli/orb check') {
   console.error('FAIL  prepack must delegate to Orb check')
   process.exit(1)
 }
+for (const forbidden of ['preinstall', 'install', 'postinstall', 'prepare']) {
+  if (forbidden in scripts) {
+    console.error(`FAIL  ${forbidden} must not install the repository launcher for package consumers`)
+    process.exit(1)
+  }
+}
 if (pkg.bin?.orb !== './cli/orb' || Object.keys(pkg.bin).length !== 1) {
   console.error('FAIL  package must expose exactly one orb binary')
   process.exit(1)
 }
-console.log('PASS  package scripts are minimal and Orb is the single binary')
+console.log('PASS  source install provisions Orb while consumer lifecycle hooks stay clean')
 NODE
 
 if grep -F '# managed-by: orbz-orb' cli/src/commands/setup-launcher.sh >/dev/null 2>&1; then
   pass 'launcher uses the Orbz-managed marker'
 else
   fail 'launcher marker is not Orbz-specific'
+fi
+
+if grep -E 'pnpm exec[[:space:]]+orb|npm exec --[[:space:]]+orb' README.md cli/readme.md >/dev/null 2>&1; then
+  fail 'active documentation requires a package-manager executable runner for Orb'
+else
+  pass 'active documentation uses direct orb commands'
 fi
 
 if grep -F '.agents' cli/src/commands/cleanup.sh >/dev/null 2>&1 && grep -F '.audits' cli/src/commands/cleanup.sh >/dev/null 2>&1; then
@@ -138,12 +154,19 @@ fi
 
 orb_tmp=${TMPDIR:-/tmp}/orb-cli-audit.$$
 trap 'rm -rf "$orb_tmp"' 0 1 2 15
-mkdir -p "$orb_tmp/bin" "$orb_tmp/package/cli" "$orb_tmp/project"
+mkdir -p "$orb_tmp/bin" "$orb_tmp/package/cli" "$orb_tmp/project" "$orb_tmp/direct-bin"
 ln -s "$ROOT/cli/orb" "$orb_tmp/bin/orb"
 if "$orb_tmp/bin/orb" --version | grep -Fx "orb $(node -p "require('./package.json').version")" >/dev/null 2>&1; then
   pass 'package-manager style symlink resolves the real CLI location'
 else
   fail 'CLI entry point fails through a symlink'
+fi
+
+if ORB_BIN_DIR="$orb_tmp/direct-bin" CI= ./cli/orb setup --launcher --bootstrap >/dev/null 2>&1 &&
+   PATH="$orb_tmp/direct-bin:$PATH" orb --version | grep -Fx "orb $(node -p "require('./package.json').version")" >/dev/null 2>&1; then
+  pass 'managed launcher exposes orb directly on PATH'
+else
+  fail 'managed launcher does not expose a direct orb command'
 fi
 
 cp package.json "$orb_tmp/package/package.json"
