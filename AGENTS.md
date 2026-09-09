@@ -27,13 +27,16 @@ This repository owns only the `@neongate-ai/orbz` npm package.
 - Do not add runtime framework wrappers.
 - Keep provider secrets and product conversation copy outside the package.
 - Treat public API additions as compatibility commitments.
-- Run `./cli/orb check` before completing a release-oriented change.
+- Run `orb check` before completing a release-oriented change.
 
 ## Harness, CLI, and Git gates
 
+- A local root `pnpm install` provisions the managed user-scoped Orb launcher; after source setup, use `orb <command>` directly.
+- `./cli/orb setup --launcher` is a recovery path when the launcher was disabled, moved, or needs refreshing.
+- Do not require package-manager executable runners for repository Orb commands.
 - `.agents/` contains context, ADRs, rules, specs, prompts, skills, and explicit workflows.
 - `.audits/` contains deterministic repository checks.
-- `./cli/orb help` lists the shell-only local engineering commands.
+- `orb help` lists the shell-only local engineering commands.
 - Husky hooks are thin adapters; Orb owns pre-commit and commit-message behavior.
 - `.cursor/hooks.json` enforces agent shell guardrails and fast post-edit feedback; release/publication boundaries remain human-controlled.
 - `.agents/workflows/` contains explicit reusable task sequences; use them instead of inventing ad hoc release or regression procedures.
@@ -51,4 +54,4 @@ This repository owns only the `@neongate-ai/orbz` npm package.
 
 ## Engineering harness command
 
-Run `./cli/orb harness` explicitly when the repository harness needs scoring or reconciliation. Harness tooling is engineering-only and must never run automatically from install, build, test, or CI lifecycle hooks.
+Run `orb harness` explicitly when the repository harness needs scoring or reconciliation. Harness tooling is engineering-only and must never run automatically from install, build, test, or CI lifecycle hooks.
