@@ -26,26 +26,25 @@
 ## Give your AI voice a presence
 
 `@neongate-ai/orbz` is a framework-agnostic, SSR-safe Web Component for AI voice
-interfaces. It gives conversations a visible identity through expressive motion,
-conversation states, configurable palettes, and provider-neutral voice APIs —
-without forcing your product into a specific frontend framework.
+interfaces. It gives a voice experience a visible identity through expressive
+motion, conversation states, configurable palettes, and provider-neutral voice
+APIs without requiring a framework-specific UI package.
 
-Orbz renders as the native `<orb-z>` custom element. Your application keeps
-control of the persona, transcript experience, authentication, backend, memory,
-and product logic.
+Orbz renders the native `<orb-z>` element. Your application keeps ownership of
+the persona, transcript UI, authentication, backend, memory, tools, quotas, and
+product logic.
 
-### Why Orbz
-
-| | |
+| Capability | What Orbz provides |
 | --- | --- |
-| **Native Web Component** | Use the same `<orb-z>` element across modern web stacks. |
-| **Voice ready** | Browser speech, application-hosted TTS, and OpenAI Realtime integration. |
-| **Conversation states** | Built-in visual behavior for idle, listening, thinking, speaking, and asleep states. |
-| **Brandable** | Presets, custom palettes, size, speed, elevation, and motion controls. |
-| **SSR safe** | Import the core package without requiring browser globals. |
-| **Accessible motion** | Built-in reduced-motion behavior with application-owned accessible status text. |
-| **Provider neutral** | Keep your voice provider, session authorization, and backend architecture under your control. |
-| **No runtime dependencies** | The package ships without third-party runtime dependencies. |
+| Native Web Component | One `<orb-z>` element for React, Next.js, Vue, Svelte, Angular, vanilla JS, and mixed stacks |
+| Voice output | Browser speech, application-hosted TTS, or a custom voice engine |
+| Realtime voice | Built-in OpenAI Realtime browser integration with an application-owned authorization boundary |
+| Bring your own model | Public model and voice selection, including provider-specific model identifiers |
+| Conversation states | Idle, listening, thinking, speaking, and asleep visual states |
+| Brand controls | Presets, custom palettes, size, speed, elevation, pause, and reduced motion |
+| SSR safety | Core imports do not require browser globals |
+| Native events | Transcript, conversation state, speaking state, and sanitized errors |
+| Zero runtime dependencies | No third-party runtime library is required by the package |
 
 <br>
 
@@ -55,29 +54,23 @@ and product logic.
 npm install @neongate-ai/orbz
 ```
 
-Or with pnpm:
+Or:
 
 ```bash
 pnpm add @neongate-ai/orbz
-```
-
-Prefer a one-shot setup command?
-
-```bash
-npx -y --package=@neongate-ai/orbz@latest orb
 ```
 
 <br>
 
 ## Quick start
 
-Register the browser element from client-side code:
+Register `<orb-z>` from browser-only code:
 
 ```ts
 import '@neongate-ai/orbz/browser'
 ```
 
-Then render Orbz anywhere you can render HTML:
+Then use it as a native element:
 
 ```html
 <orb-z
@@ -88,19 +81,98 @@ Then render Orbz anywhere you can render HTML:
 ></orb-z>
 ```
 
-Change the visual state as your conversation moves:
+For typed JavaScript access:
 
 ```ts
-const orb = document.querySelector('orb-z')
+import type { OrbzElement } from '@neongate-ai/orbz'
+import '@neongate-ai/orbz/browser'
 
-orb?.setAttribute('state', 'listening')
-orb?.setAttribute('state', 'thinking')
-orb?.setAttribute('state', 'speaking')
+const orb = document.querySelector<OrbzElement>('orb-z')!
+
+orb.state = 'listening'
+orb.size = '18rem'
+orb.speed = 1.2
 ```
 
 <br>
 
-## Add voice
+## Web Component API
+
+### HTML attributes
+
+| Attribute | Values | Default | Purpose |
+| --- | --- | --- | --- |
+| `state` | `idle`, `listening`, `thinking`, `speaking`, `asleep` | `idle` | Select the visual conversation state |
+| `size` | Positive number or CSS size string | `16rem` | Control the orb dimensions |
+| `speed` | Positive number | `1` | Scale animation speed |
+| `speech` | String | none | Text consumed by output-only speech flows |
+| `paused` | Boolean attribute | absent | Pause animation |
+| `elevated` | Boolean attribute | absent | Enable elevated presentation |
+| `preset` | `neongate`, `periwinkle`, `magenta`, `peach`, `mocha`, `ivory` | `neongate` | Select a bundled palette |
+| `reduced-motion` | `system`, `always`, `never` | `system` | Control motion reduction |
+| `color-primary` | CSS color | preset value | Override the primary color |
+| `color-secondary` | CSS color | preset value | Override the secondary color |
+| `color-accent` | CSS color | preset value | Override the accent color |
+| `color-highlight` | CSS color | preset value | Override the highlight color |
+| `color-background` | CSS color | preset value | Override the background color |
+
+Do not combine an explicit `preset` with custom color attributes. When a preset
+is selected, the preset wins and custom color attributes are ignored.
+
+### JavaScript properties
+
+The element exposes the same presentation controls plus the voice and
+conversation APIs that should not be serialized into HTML attributes.
+
+| Property | Type / role |
+| --- | --- |
+| `state` | Visual `OrbzState` |
+| `size` | `number | string` |
+| `speed` | Animation speed multiplier |
+| `paused` | Animation pause state |
+| `elevated` | Elevated presentation state |
+| `preset` | Bundled palette name |
+| `reducedMotion` | `system | always | never` |
+| `speech` | Explicit text for output-only speech |
+| `voiceModel` | Public provider/model/voice selection |
+| `realtimeSession` | Application-owned Realtime authorization boundary |
+| `voiceEngine` | Custom or built-in output-only voice engine |
+| `talkFlow` | Optional explicit multi-step talk flow |
+| `intelligence` | Optional application-provided response strategy |
+| `conversationState` | Read-only live conversation state |
+| `talkContext` | Read-only captured talk-flow context |
+
+### Methods
+
+| Method | Purpose |
+| --- | --- |
+| `play()` | Resume animation |
+| `pause()` | Pause animation |
+| `restart()` | Restart animation |
+| `startTalking()` | Start the configured output-only speech flow |
+| `stopTalking()` | Cancel the current output-only speech flow |
+| `receive(input)` | Deliver text input to the configured talk flow |
+| `startConversation()` | Start a live Realtime conversation |
+| `interruptConversation()` | Interrupt the current Realtime assistant response |
+| `stopConversation()` | End the live Realtime conversation |
+
+<br>
+
+## Voice integrations
+
+Orbz keeps visual presence and voice transport separate from your application's
+persona and backend. You can use the built-in browser/TTS/Realtime integrations
+or provide your own voice engine.
+
+| Provider | Configure with | Start with | Your application supplies |
+| --- | --- | --- | --- |
+| `web-speech` | `voiceModel` or `WebSpeechAdapter` | `startTalking()` | Text and optional browser voice preferences |
+| `openai-speech` | `voiceModel` or `OpenAISpeechAdapter` | `startTalking()` | Your audio endpoint, model/voice options, and server-side provider credential |
+| `openai-realtime` | `voiceModel` + `realtimeSession` | `startConversation()` | Your session endpoint/authorizer, provider credential, instructions, tools, and policy |
+| Custom | `voiceEngine` | `startTalking()` | Any implementation of `speak(text)` and `stop()` |
+
+Selecting a model is silent. Orbz does not automatically start playback or open
+a microphone session when `voiceModel`, `speech`, or `voiceEngine` changes.
 
 ### Browser speech
 
@@ -114,13 +186,67 @@ import '@neongate-ai/orbz/browser'
 const orb = document.querySelector<OrbzElement>('orb-z')!
 
 orb.speech = 'Welcome. How can I help?'
-orb.voiceEngine = new WebSpeechAdapter({ language: 'en-US' })
+orb.voiceEngine = new WebSpeechAdapter({
+  language: 'en-US',
+  rate: 1,
+  pitch: 1,
+  volume: 1,
+  preferredVoices: ['Google US English']
+})
 
 await orb.startTalking()
 ```
 
-Orbz never invents speech content. Your product supplies the text and decides
-when playback starts.
+`WebSpeechAdapter` accepts:
+
+| Option | Purpose |
+| --- | --- |
+| `language` | BCP 47 language tag such as `en-US` or `pt-BR` |
+| `pitch` | Browser speech pitch |
+| `rate` | Browser speech rate |
+| `volume` | Browser speech volume |
+| `preferredVoices` | Ordered browser voice preferences |
+| `voiceLoadTimeoutMs` | Maximum wait for browser voices to become available |
+
+Language selection controls voice matching and pronunciation. Orbz does not
+translate the supplied text.
+
+### OpenAI text-to-speech through your backend
+
+Use an application-owned endpoint so the permanent OpenAI API key never reaches
+the browser:
+
+```ts
+import type { OrbzElement } from '@neongate-ai/orbz'
+import '@neongate-ai/orbz/browser'
+
+const orb = document.querySelector<OrbzElement>('orb-z')!
+
+orb.speech = 'Your order is ready.'
+orb.voiceModel = {
+  provider: 'openai-speech',
+  endpoint: '/api/voice/speech',
+  model: 'gpt-4o-mini-tts',
+  voice: 'marin',
+  responseFormat: 'mp3'
+}
+
+await orb.startTalking()
+```
+
+The application endpoint returns audio. Public `openai-speech` options are:
+
+| Option | Purpose |
+| --- | --- |
+| `endpoint` | Required application endpoint that returns speech audio |
+| `model` | OpenAI speech model identifier; custom strings are accepted |
+| `voice` | Supported voice identifier; custom strings are accepted |
+| `responseFormat` | `aac`, `flac`, `mp3`, `opus`, or `wav` |
+| `requestTimeoutMs` | Client request timeout |
+
+The lower-level `OpenAISpeechAdapter` also supports application-endpoint fetch
+options and `instructions`. Do not use its headers option to expose a permanent
+provider key to browser code.
 
 ### OpenAI Realtime
 
@@ -132,7 +258,8 @@ const orb = document.querySelector<OrbzElement>('orb-z')!
 
 orb.voiceModel = {
   provider: 'openai-realtime',
-  model: 'gpt-realtime-2'
+  model: 'gpt-realtime-2',
+  voice: 'marin'
 }
 
 orb.realtimeSession = {
@@ -143,29 +270,123 @@ orb.realtimeSession = {
 await orb.startConversation()
 ```
 
-Your application owns `/api/voice/session`, authentication, allowed models,
-provider credentials, tools, instructions, transcripts, usage controls, and
-session policy. Permanent provider keys stay on your server — never in the
-component, HTML, or public client configuration.
+Public Realtime model options are:
 
-| Provider | Start with | Application supplies |
-| --- | --- | --- |
-| `web-speech` | `speech` + `startTalking()` | Text and optional browser voice preferences |
-| `openai-speech` | `speech` + `startTalking()` | Application audio endpoint and optional model/voice |
-| `openai-realtime` | `startConversation()` | Application session endpoint or authorizer |
+| Option | Purpose |
+| --- | --- |
+| `model` | Realtime model identifier; custom strings are accepted |
+| `voice` | Provider-supported voice identifier |
+| `sessionTimeoutMs` | Browser-side startup timeout |
+
+`realtimeSession` can be either an application endpoint object or an async
+authorizer callback.
+
+Endpoint form:
+
+```ts
+orb.realtimeSession = {
+  endpoint: '/api/voice/session',
+  credentials: 'same-origin'
+}
+```
+
+Callback form:
+
+```ts
+orb.realtimeSession = async ({ sdp, model, voice, signal }) => {
+  const response = await fetch('/api/voice/session', {
+    method: 'POST',
+    body: JSON.stringify({ sdp, model, voice }),
+    headers: { 'content-type': 'application/json' },
+    signal
+  })
+
+  if (!response.ok) throw new Error('Unable to create voice session')
+  return response.text()
+}
+```
+
+For the endpoint form, Orbz posts JSON containing `{ sdp, model, voice }` and
+expects the SDP answer as text. Your server authenticates the user, enforces the
+models/voices your product allows, talks to the provider with its server-side
+credential, and returns the answer.
+
+After setup, microphone and assistant audio use the provider's Realtime browser
+transport. Your server remains responsible for session policy, instructions,
+tools, quotas, billing rules, sideband connections, and remote cleanup.
+
+### Bring your own voice engine
+
+If you already have a speech provider or your own model gateway, implement the
+small `OrbzVoiceEnginePort` contract:
+
+```ts
+import type { OrbzVoiceEnginePort } from '@neongate-ai/orbz'
+
+class MyVoiceEngine implements OrbzVoiceEnginePort {
+  async speak(text: string): Promise<void> {
+    // Send text to your provider and play the resulting audio.
+  }
+
+  stop(): void {
+    // Cancel the active request/playback.
+  }
+}
+
+orb.voiceEngine = new MyVoiceEngine()
+orb.speech = 'Hello from my own voice stack.'
+await orb.startTalking()
+```
+
+An explicitly assigned `voiceEngine` takes precedence over `voiceModel`. Set
+`orb.voiceEngine = undefined` to return control to the selected `voiceModel`.
+Starting output-only speech stops a live Realtime conversation, and starting a
+Realtime conversation stops output-only speech.
 
 <br>
 
-## Conversation states
+## Talk flow and application intelligence
 
-Orbz has five visual states designed around voice interaction:
+Orbz ships without a persona, greeting, fallback copy, or hidden conversation
+script. If your UI needs a small explicit talk flow, provide it yourself:
 
-| State | Use it for |
+```ts
+orb.talkFlow = [
+  {
+    id: 'welcome',
+    kind: 'say',
+    needsAuth: false,
+    text: 'Hello. What is your name?'
+  },
+  {
+    id: 'name',
+    kind: 'ask',
+    needsAuth: false,
+    capture: 'fullName',
+    text: 'I am listening.'
+  }
+]
+
+await orb.startTalking()
+await orb.receive('Ana')
+```
+
+Applications can also supply an `intelligence` object whose `respond(input,
+context)` method returns application-generated text. This is an integration
+boundary, not an embedded Orbz LLM or credential store.
+
+<br>
+
+## Conversation and visual states
+
+Visual `state` controls the orb animation:
+
+| State | Intended signal |
 | --- | --- |
 | `idle` | Ambient presence before or between turns |
-| `listening` | Capturing user input |
-| `thinking` | Processing or waiting for a response |
-| `speaking` | Assistant audio playback |
+| `listening` | User input is being captured |
+| `thinking` | The application or model is processing |
+| `speaking` | Assistant audio is active |
 | `asleep` | Inactive or subdued presence |
 
 ```html
@@ -173,20 +394,31 @@ Orbz has five visual states designed around voice interaction:
 ```
 
 When Orbz speaks through its talk API, it temporarily switches to `speaking` and
-restores the previous state when speech completes or is cancelled.
+restores the previous visual state when speech completes or is cancelled.
+
+Live Realtime sessions also expose the read-only `conversationState` property:
+`idle`, `connecting`, `listening`, `thinking`, `speaking`, or `error`.
 
 <br>
 
-## Make it yours
+## Presets and custom branding
 
-The default preset is **NeonGate** (`neongate`). Additional bundled presets are
-`periwinkle`, `magenta`, `peach`, `mocha`, and `ivory`.
+The default preset is **NeonGate** (`neongate`).
+
+| Preset | Primary | Secondary | Accent | Highlight | Background |
+| --- | --- | --- | --- | --- | --- |
+| `neongate` | `#6C5CFF` | `#00E9FF` | `#FF4DDE` | `#FFB07A` | `#14142B` |
+| `periwinkle` | `#6667AB` | `#8FB8FF` | `#E66FA9` | `#F3ECFF` | `#111226` |
+| `magenta` | `#BB2649` | `#F06A82` | `#29B8A6` | `#FFDCE4` | `#250A12` |
+| `peach` | `#FFBE98` | `#FF8F70` | `#D987A3` | `#FFF0E7` | `#2A1516` |
+| `mocha` | `#A47864` | `#D3A17E` | `#7FA18F` | `#F2E2D7` | `#211613` |
+| `ivory` | `#F0EEE9` | `#AFC7D3` | `#C8B3D4` | `#FFFFFF` | `#171A20` |
 
 ```html
 <orb-z preset="peach" state="listening"></orb-z>
 ```
 
-Need your own brand palette? Configure the native element directly:
+Or supply your own palette:
 
 ```html
 <orb-z
@@ -198,7 +430,7 @@ Need your own brand palette? Configure the native element directly:
 ></orb-z>
 ```
 
-Presentation controls stay intentionally small:
+Presentation controls can be combined independently:
 
 ```html
 <orb-z
@@ -209,90 +441,137 @@ Presentation controls stay intentionally small:
 ></orb-z>
 ```
 
-Use `play()`, `pause()`, and `restart()` when your application needs imperative
-motion control.
+Use `play()`, `pause()`, and `restart()` for imperative motion control.
 
 <br>
 
-## Works with your stack
+## Events
 
-Orbz is a native custom element rather than a framework wrapper. That keeps the
-UI primitive portable across React, Next.js, Vue, Svelte, Angular, vanilla
-JavaScript, microfrontends, and mixed-stack applications.
+Orbz dispatches native `CustomEvent` instances from the host element.
 
-The main package entry is safe to import during server rendering:
+| Event | Detail |
+| --- | --- |
+| `orbz-conversation-state-change` | `{ state }` where state is `idle`, `connecting`, `listening`, `thinking`, `speaking`, or `error` |
+| `orbz-transcript` | `{ role, text, final, itemId? }` for user/assistant transcript updates |
+| `orbz-speaking-change` | `{ speaking }` for audible output transitions |
+| `orbz-talk-error` | `{ error }` for sanitized built-in talk/provider errors |
 
 ```ts
-import type { OrbzElement } from '@neongate-ai/orbz'
+orb.addEventListener('orbz-transcript', (event) => {
+  const { role, text, final } = (
+    event as CustomEvent<{
+      role: 'user' | 'assistant'
+      text: string
+      final: boolean
+    }>
+  ).detail
 
-// Run registration only inside the browser/client boundary.
-await import('@neongate-ai/orbz/browser')
+  console.log({ role, text, final })
+})
 ```
 
-React and Next.js projects can opt into native JSX typing:
+Orbz does not store transcript history, conversation memory, or audio history.
+Your application decides whether and where those events are persisted.
+
+<br>
+
+## React and Next.js
+
+Orbz remains a native custom element. React projects can add JSX typing without
+using a wrapper component:
 
 ```ts
 import '@neongate-ai/orbz/react-types'
 import '@neongate-ai/orbz/browser'
 ```
 
-The rendered component remains `<orb-z>` — no Orbz-specific React wrapper is
-required.
+Then:
+
+```tsx
+<orb-z
+  state="listening"
+  preset="neongate"
+  size="18rem"
+  reduced-motion="system"
+  aria-label="Voice assistant"
+/>
+```
+
+`voiceModel` and `realtimeSession` are also typed properties for React usage.
+`className` is intentionally excluded because a host class cannot style the
+closed shadow tree. Use Orbz appearance APIs for the component itself and wrap
+the element when you need page-layout styling.
 
 <br>
 
-## Events
+## SSR and browser registration
 
-Orbz communicates through native `CustomEvent` instances, so applications can
-connect it to their own conversation, analytics, transcript, or memory layers.
-
-| Event | Detail |
-| --- | --- |
-| `orbz-conversation-state-change` | Conversation state changes |
-| `orbz-transcript` | User or assistant transcript updates |
-| `orbz-speaking-change` | Audible speaking state changes |
-| `orbz-talk-error` | Sanitized talk/provider errors |
+The core package is safe to import when `HTMLElement` and `customElements` are
+not available:
 
 ```ts
-orb.addEventListener('orbz-speaking-change', (event) => {
-  const { speaking } = (event as CustomEvent<{ speaking: boolean }>).detail
-  console.log({ speaking })
-})
+import type { OrbzElement } from '@neongate-ai/orbz'
 ```
 
-Orbz does not store transcript history or implement application memory. Forward
-only the events your product actually needs.
+Register the element only inside a browser/client boundary:
+
+```ts
+await import('@neongate-ai/orbz/browser')
+```
+
+If you prefer explicit registration instead of the browser side-effect entry:
+
+```ts
+import { defineOrbz } from '@neongate-ai/orbz'
+
+defineOrbz()
+```
+
+`defineOrbz()` defines `<orb-z>` once and safely returns without registering in
+a non-browser environment.
 
 <br>
 
 ## Security boundary
 
-Orbz is a client-side interface primitive, not a credential vault.
+Orbz accepts public model configuration and an application authorization
+boundary. It is not a credential vault.
 
-Keep permanent provider keys on your backend. Realtime integrations should expose
-an application-owned session endpoint or authorizer that authenticates the user,
-enforces your allowed models and voices, and exchanges short-lived session data
-with the provider.
+**Keep permanent provider API keys on your server.** A JavaScript property is
+not an HTML attribute, but anything delivered to browser memory can still be
+read by compromised client code.
 
-The component owns the browser-side interaction surface. Your application owns
-identity, authorization, quotas, billing, provider policy, server-side tools,
-remote cleanup, and any long-term conversation data.
+For Realtime, the endpoint form accepts only the public endpoint, Fetch cookie
+policy, and an optional consumer-owned `fetch` implementation. The application
+server authenticates and authorizes the user and uses its own provider key.
+
+For application-hosted TTS, send requests to your own endpoint and let that
+endpoint call the provider. Do not embed permanent provider keys in URLs,
+attributes, model objects, headers shipped to the client, or custom-element
+properties.
+
+| Orbz owns | Your application owns |
+| --- | --- |
+| Visual presence and animation | Persona and system instructions |
+| Browser-side voice interaction | User authentication and authorization |
+| Public provider/model selection | Permanent provider credentials |
+| Native conversation events | Transcript UI and persistence |
+| Client Realtime setup | Tools, quotas, billing, and provider policy |
+| Reduced-motion behavior | Long-term memory and consent policy |
 
 <br>
 
 ## Accessibility
 
-The animated shadow content is visual and hidden from assistive technology. Your
-application decides what the host means:
+The animated shadow content is visual and hidden from assistive technology. The
+host element gets its meaning from your application.
 
-- give meaningful orbs an accessible role and name;
-- hide purely decorative instances from assistive technology;
-- keep spoken content available as visible text, captions, or transcript;
-- announce listening, thinking, speaking, and errors through application-owned
-  status text or live regions;
-- keep `reduced-motion="system"` unless your product has an explicit user setting.
-
-Motion or color should never be the only way your interface communicates state.
+- For a meaningful visual identity, provide an appropriate role and accessible name.
+- For a decorative orb, hide the host from assistive technology.
+- Keep spoken content available as visible text, captions, or a transcript.
+- Announce listening, thinking, speaking, and errors through application-owned status text or live regions.
+- Keep `reduced-motion="system"` unless your product has an explicit user preference.
+- Do not use animation or palette changes as the only way to communicate meaning.
 
 <br>
 
@@ -301,16 +580,17 @@ Motion or color should never be the only way your interface communicates state.
 | Import | Purpose |
 | --- | --- |
 | `@neongate-ai/orbz` | Types, constants, factories, ports, adapters, and explicit registration API |
-| `@neongate-ai/orbz/browser` | Main API plus browser registration |
+| `@neongate-ai/orbz/browser` | Main API plus automatic browser registration |
 | `@neongate-ai/orbz/react-types` | React JSX type augmentation |
 | `@neongate-ai/orbz/standalone` | Direct-browser/CDN bundle |
 | `@neongate-ai/orbz/index.css` | Explicit stylesheet export |
 
-For the full API, provider setup, configuration details, and implementation
-guides, use the documentation site rather than the npm README.
+The README is intentionally focused on **using Orbz in an application**. Deeper
+integration guides and API documentation are available at
+[orbz.site](https://orbz.site).
 
 <p align="center">
-  <a href="https://orbz.site"><strong>Read the docs →</strong></a>
+  <a href="https://orbz.site"><strong>Read the documentation →</strong></a>
 </p>
 
 <br>
