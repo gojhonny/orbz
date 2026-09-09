@@ -19,10 +19,10 @@ the deterministic documentation audit still required the removed contributor,
 Git, release, and Orb engineering sections, causing PR CI to fail.
 
 Separately, active CLI guidance told repository users to invoke Orb through
-package-manager executable runners. The reference Amarelo CLI instead provisions
-a managed user launcher during source setup so engineering commands are simply
-`orb <command>`. Orbz already has a safe managed launcher but did not provision
-it automatically from the source install lifecycle.
+package-manager executable runners. The owner-provided reference CLI instead
+provisions a managed user launcher during source setup so engineering commands
+are simply `orb <command>`. Orbz already has a safe managed launcher but did not
+provision it automatically from the source install lifecycle.
 
 ## Scope
 
@@ -45,7 +45,7 @@ changed.
 3. The documentation audit enforces the consumer README contract rather than the
    superseded contributor-oriented headings.
 4. Repository engineering documentation uses `orb <command>` directly. Active
-   documentation must not require `pnpm exec orb` or `npm exec -- orb`.
+   documentation must not require package-manager executable runners for Orb.
 5. A local root `pnpm install` provisions the existing managed launcher before
    dependencies are installed, using a root-only pnpm lifecycle that does not run
    as a dependency lifecycle for application consumers.
@@ -73,11 +73,11 @@ changed.
 ## Evidence
 
 - PR #23 CI run `34412392895` failed in `.audits/documentation.audit.sh` because
-  it required removed headings such as `## Contributing` and tokens such as
-  `pnpm exec orb --help`, `Commitlint`, and repository bootstrap commands.
-- `gojhonny/amarelo` uses a managed user launcher as its canonical direct CLI
-  surface; Orbz already had equivalent guarded launcher mechanics in
-  `cli/src/commands/setup-launcher.sh` but did not provision them automatically
+  it required removed contributor-oriented headings and package-manager runner,
+  Git-quality, and repository-bootstrap tokens.
+- The owner-provided reference CLI uses a managed user launcher as its canonical
+  direct command surface; Orbz already had equivalent guarded launcher mechanics
+  in `cli/src/commands/setup-launcher.sh` but did not provision them automatically
   during ordinary source installation.
 - `package.json#scripts.pnpm:devPreinstall` now invokes
   `./cli/orb setup --launcher --bootstrap`; the package continues to omit
@@ -89,7 +89,7 @@ changed.
 
 ## Related records
 
-- ADRs: ADR-0010, ADR-0011
+- ADRs: ADR-0010, ADR-0011, ADR-0020
 - Rules: 007, 008, 011
 - Earlier specs: SPEC-012, SPEC-014, SPEC-016
 
