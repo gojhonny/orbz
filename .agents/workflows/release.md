@@ -5,11 +5,11 @@ Use when preparing a patch, minor, or major Orbz release. Publishing remains a h
 1. Read `.agents/context/release.md`, Rule 009, Rule 011, and the release SPEC.
 2. Confirm the working branch is intended for release and the working tree is clean.
 3. Confirm `package.json#version` is the intended canonical SemVer.
-4. Run `./cli/orb doctor`.
-5. Run `./cli/orb lint`.
-6. Run `./cli/orb typecheck`.
-7. Run `./cli/orb test` and require zero unhandled errors.
-8. Run `./cli/orb check`.
+4. Run `orb doctor`.
+5. Run `orb lint`.
+6. Run `orb typecheck`.
+7. Run `orb test` and require zero unhandled errors.
+8. Run `orb check`.
 9. Run `npm pack --dry-run` and inspect the payload.
 10. Confirm local `main` equals `origin/main` before tagging a merged release.
 11. Confirm the target npm version is not already published.

@@ -16,7 +16,7 @@ fail() {
 }
 
 # ---------------------------------------------------------------------------
-# README assets
+# README assets and product-first hero
 # ---------------------------------------------------------------------------
 
 for image in \
@@ -30,89 +30,44 @@ do
   fi
 done
 
-# ---------------------------------------------------------------------------
-# README hero
-#
-# The current Orbz README intentionally uses:
-#
-#   tagline
-#   -> banner
-#   -> badges
-#   -> TLDR
-#
-# Installation guidance is validated separately below and does not need to be
-# artificially placed inside the hero.
-# ---------------------------------------------------------------------------
-
-tagline_line=$(
-  grep -n -m1 'assets/images/orbz-tagline.svg' README.md |
-    cut -d: -f1 ||
-    true
-)
-
-banner_line=$(
-  grep -n -m1 'assets/images/readme-banner.png' README.md |
-    cut -d: -f1 ||
-    true
-)
-
-badges_line=$(
-  grep -n -m1 'badge-l4.svg' README.md |
-    cut -d: -f1 ||
-    true
-)
-
-tldr_line=$(
-  grep -n -m1 '^## TLDR$' README.md |
-    cut -d: -f1 ||
-    true
-)
+tagline_line=$(grep -n -m1 'assets/images/orbz-tagline.svg' README.md | cut -d: -f1 || true)
+banner_line=$(grep -n -m1 'assets/images/readme-banner.png' README.md | cut -d: -f1 || true)
+badges_line=$(grep -n -m1 'badge-l4.svg' README.md | cut -d: -f1 || true)
+product_line=$(grep -n -m1 '^## Give your AI voice a presence$' README.md | cut -d: -f1 || true)
 
 if \
   [ -n "$tagline_line" ] &&
   [ -n "$banner_line" ] &&
   [ -n "$badges_line" ] &&
-  [ -n "$tldr_line" ] &&
+  [ -n "$product_line" ] &&
   [ "$tagline_line" -lt "$banner_line" ] &&
   [ "$banner_line" -lt "$badges_line" ] &&
-  [ "$badges_line" -lt "$tldr_line" ]
+  [ "$badges_line" -lt "$product_line" ]
 then
-  pass 'README hero follows tagline, banner, badges, then TLDR'
+  pass 'README hero leads into the product implementation guide'
 else
-  fail 'README hero must be tagline -> banner -> badges -> TLDR'
+  fail 'README hero must be tagline -> banner -> badges -> product guide'
 fi
 
-# ---------------------------------------------------------------------------
-# Required documentation sections
-# ---------------------------------------------------------------------------
-
-for heading in \
-  '## Getting started' \
-  '## Speech and language' \
-  '## States' \
-  '## Presets' \
-  '### Custom palette' \
-  '### Size, motion, and presentation' \
-  '## Accessibility' \
-  '## Server rendering and frameworks' \
-  '### Package entry points' \
-  '## Contributing' \
-  '### Git quality gates and semantic versioning'
+for token in \
+  'paladini.github.io/harness-score/maturity/badge-l4.svg' \
+  'github/actions/workflow/status/gojhonny/orbz/ci.yml' \
+  'img.shields.io/npm/v/%40neongate-ai%2Forbz'
 do
-  if grep -F -x "$heading" README.md >/dev/null 2>&1; then
-    pass "README contains $heading"
+  if grep -F "$token" README.md >/dev/null 2>&1; then
+    pass "README contains badge $token"
   else
-    fail "README is missing $heading"
+    fail "README is missing badge $token"
   fi
 done
 
-# Keep the existing resource links together, centered, and in their authored
-# order. Badges belong to a separate centered paragraph and are not navigation.
+# Keep consumer resources together. Repository engineering navigation belongs
+# outside the npm-facing README.
 if awk '
   BEGIN {
     expected[1] = "<a href=\"https://orbz.site\"><strong>Documentation</strong></a>"
-    expected[2] = "<a href=\"https://www.npmjs.com/package/@neongate-ai/orbz\"><strong>npm package</strong></a>"
-    expected[3] = "<a href=\"./LICENSE\"><strong>License</strong></a>"
+    expected[2] = "<a href=\"https://www.npmjs.com/package/@neongate-ai/orbz\"><strong>npm</strong></a>"
+    expected[3] = "<a href=\"./LICENSE\"><strong>MIT License</strong></a>"
   }
   /^[[:space:]]*<p align="center">[[:space:]]*$/ {
     active = 1; count = 0; valid = 1; next
@@ -127,23 +82,80 @@ if awk '
   }
   END { exit(found ? 0 : 1) }
 ' README.md; then
-  pass 'README resource links are centered with original labels and destinations'
+  pass 'README centers Documentation, npm, and MIT License consumer links'
 else
-  fail 'README must center Documentation, npm package, then License with their original destinations'
+  fail 'README must center Documentation, npm, and MIT License consumer links'
 fi
 
 # ---------------------------------------------------------------------------
-# Presets
+# Consumer implementation documentation
 # ---------------------------------------------------------------------------
 
-for value in \
-  neongate \
-  periwinkle \
-  magenta \
-  peach \
-  mocha \
-  ivory
+for heading in \
+  '## Install' \
+  '## Quick start' \
+  '## Web Component API' \
+  '### HTML attributes' \
+  '### JavaScript properties' \
+  '### Methods' \
+  '## Voice integrations' \
+  '### Browser speech' \
+  '### OpenAI text-to-speech through your backend' \
+  '### OpenAI Realtime' \
+  '### Bring your own voice engine' \
+  '## Talk flow and application intelligence' \
+  '## Conversation and visual states' \
+  '## Presets and custom branding' \
+  '## Events' \
+  '## React and Next.js' \
+  '## SSR and browser registration' \
+  '## Security boundary' \
+  '## Accessibility' \
+  '## Package entry points' \
+  '## License'
 do
+  if grep -F -x "$heading" README.md >/dev/null 2>&1; then
+    pass "README contains $heading"
+  else
+    fail "README is missing $heading"
+  fi
+done
+
+for token in \
+  '@neongate-ai/orbz/browser' \
+  '<orb-z' \
+  voiceModel \
+  realtimeSession \
+  voiceEngine \
+  talkFlow \
+  intelligence \
+  conversationState \
+  talkContext \
+  'startTalking()' \
+  'stopTalking()' \
+  'receive(input)' \
+  'startConversation()' \
+  'interruptConversation()' \
+  'stopConversation()' \
+  web-speech \
+  openai-speech \
+  openai-realtime \
+  gpt-4o-mini-tts \
+  gpt-realtime-2 \
+  pt-BR \
+  en-US \
+  color-primary \
+  reduced-motion \
+  defineOrbz
+do
+  if grep -F "$token" README.md >/dev/null 2>&1; then
+    pass "README documents consumer API token $token"
+  else
+    fail "README does not document consumer API token $token"
+  fi
+done
+
+for value in neongate periwinkle magenta peach mocha ivory; do
   if grep -F "$value" README.md >/dev/null 2>&1; then
     pass "README documents preset $value"
   else
@@ -151,17 +163,7 @@ do
   fi
 done
 
-# ---------------------------------------------------------------------------
-# Orb states
-# ---------------------------------------------------------------------------
-
-for value in \
-  idle \
-  listening \
-  thinking \
-  speaking \
-  asleep
-do
+for value in idle listening thinking speaking asleep; do
   if grep -F "$value" README.md >/dev/null 2>&1; then
     pass "README documents state $value"
   else
@@ -170,74 +172,57 @@ do
 done
 
 # ---------------------------------------------------------------------------
-# Core package and engineering documentation
+# Root README must not become repository-maintainer documentation
 # ---------------------------------------------------------------------------
 
-for token in \
-  speech \
-  pt-BR \
-  en-US \
-  color-primary \
-  reduced-motion \
-  'startTalking()' \
+for forbidden in \
+  '## Contributing' \
+  '## Release review' \
   './cli/orb bootstrap' \
-  'orb check' \
   'orb cleanup --dry-run' \
-  'orb cleanup --keep-dependencies' \
-  'npx -y --package=@neongate-ai/orbz@latest orb' \
-  lint-staged \
-  Commitlint \
-  SemVer
+  'orb git setup' \
+  'lint-staged' \
+  'Commitlint' \
+  '.agents/' \
+  '.audits/' \
+  'Fork maintainers'
 do
-  if grep -F "$token" README.md >/dev/null 2>&1; then
-    pass "README documents $token"
+  if grep -F "$forbidden" README.md >/dev/null 2>&1; then
+    fail "README contains repository-maintainer material: $forbidden"
   else
-    fail "README does not document $token"
+    pass "README excludes repository-maintainer material: $forbidden"
   fi
 done
 
 # ---------------------------------------------------------------------------
-# README badges and published Orb CLI
+# Engineering CLI documentation: direct Orb is canonical
 # ---------------------------------------------------------------------------
 
 for token in \
-  'paladini.github.io/harness-score/maturity/badge-l4.svg' \
-  'github/actions/workflow/status/gojhonny/orbz/ci.yml' \
-  'img.shields.io/npm/v/%40neongate-ai%2Forbz' \
-  '## Orb CLI' \
-  'pnpm exec orb --help' \
-  'npm exec -- orb --help'
+  '## Source checkout: use `orb` directly' \
+  'orb doctor' \
+  'orb test' \
+  'orb check' \
+  'pnpm:devPreinstall' \
+  './cli/orb setup --launcher'
 do
-  if grep -F "$token" README.md >/dev/null 2>&1; then
-    pass "README documents $token"
+  if grep -F "$token" cli/readme.md >/dev/null 2>&1; then
+    pass "CLI guide documents $token"
   else
-    fail "README does not document $token"
+    fail "CLI guide does not document $token"
   fi
 done
 
-# ---------------------------------------------------------------------------
-# Orb is the engineering command surface.
-#
-# Removed package-script aliases must not come back into active documentation.
-# ---------------------------------------------------------------------------
+if grep -E 'pnpm exec[[:space:]]+orb|npm exec --[[:space:]]+orb' README.md cli/readme.md >/dev/null 2>&1; then
+  fail 'active documentation requires a package-manager executable runner for Orb'
+else
+  pass 'active documentation uses orb directly for engineering commands'
+fi
 
 if grep -E 'pnpm (orb|check|version:check)' README.md cli/readme.md >/dev/null 2>&1; then
   fail 'documentation retains removed package-script command aliases'
 else
-  pass 'documentation routes repository commands through Orb'
-fi
-
-# ---------------------------------------------------------------------------
-# Distribution contract
-# ---------------------------------------------------------------------------
-
-if \
-  grep -F 'package binary' README.md >/dev/null 2>&1 &&
-  grep -F 'POSIX shell' README.md >/dev/null 2>&1
-then
-  pass 'README documents the published POSIX shell binary'
-else
-  fail 'README does not document the published POSIX shell binary'
+  pass 'documentation keeps Orb as the engineering command surface'
 fi
 
 # ---------------------------------------------------------------------------

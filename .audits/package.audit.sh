@@ -33,13 +33,19 @@ for (const entry of ['.', './browser', './react-types', './standalone', './index
 }
 
 const scripts = pkg.scripts ?? {}
-if (JSON.stringify(Object.keys(scripts).sort()) === JSON.stringify(['prepack', 'setup'])) {
-  pass('package scripts contain only setup and prepack')
+const expectedScripts = ['pnpm:devPreinstall', 'prepack', 'setup']
+if (JSON.stringify(Object.keys(scripts).sort()) === JSON.stringify(expectedScripts)) {
+  pass('package scripts contain only source launcher setup, setup recovery, and prepack')
 } else {
   fail(`unexpected package script aliases: ${Object.keys(scripts).sort().join(', ')}`)
 }
-if (scripts.setup === './cli/orb setup --launcher') pass('setup bridge delegates to Orb')
-else fail('setup bridge must delegate to Orb launcher setup')
+if (scripts['pnpm:devPreinstall'] === './cli/orb setup --launcher --bootstrap') {
+  pass('local pnpm install provisions the managed Orb launcher')
+} else {
+  fail('pnpm:devPreinstall must provision the managed Orb launcher')
+}
+if (scripts.setup === './cli/orb setup --launcher') pass('setup recovery bridge delegates to Orb')
+else fail('setup recovery bridge must delegate to Orb launcher setup')
 if (scripts.prepack === './cli/orb check') pass('prepack delegates to complete Orb check')
 else fail('prepack must delegate to ./cli/orb check')
 for (const forbidden of ['preinstall', 'install', 'postinstall', 'prepare']) {

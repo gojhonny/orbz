@@ -43,6 +43,7 @@
     "custom-elements"
   ],
   "scripts": {
+    "pnpm:devPreinstall": "./cli/orb setup --launcher --bootstrap",
     "setup": "./cli/orb setup --launcher",
     "prepack": "./cli/orb check"
   },
