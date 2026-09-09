@@ -94,7 +94,7 @@ else
   if [ -n "$direct_bin" ] && [ -x "$direct_bin/orb" ] && [ "$(sed -n '2p' "$direct_bin/orb" 2>/dev/null || true)" = '# managed-by: orbz-orb' ]; then
     pass direct-orb "$direct_bin/orb"
   else
-    warn direct-orb 'not configured; run ./cli/orb setup'
+    warn direct-orb 'not configured; run pnpm install or ./cli/orb setup --launcher'
   fi
 fi
 
